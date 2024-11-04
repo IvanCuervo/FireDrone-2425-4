@@ -13,6 +13,11 @@ public class Program
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
+        builder.Services.AddDbContext<Data.ApplicationDbContext>(options =>
+              options.UseSqlite("Data Source=FireDrone-2425-4.db"));
+
+        // Opcional: para ver errores de base de datos en desarrollo
+        builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
         var app = builder.Build();
 
