@@ -1,8 +1,4 @@
-using Microsoft.EntityFrameworkCore;
-using Models;
-
-namespace DataDB
-{
+﻿using Microsoft.EntityFrameworkCore;
 
 public class AppDbContext : DbContext
 {
