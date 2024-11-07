@@ -1,11 +1,7 @@
 {
   "ExpandedNodes": [
-    "",
-    "\\src",
-    "\\src\\CentralBackend",
-    "\\src\\Data",
-    "\\src\\Models"
+    ""
   ],
-  "SelectedNode": "\\src\\CentralBackend\\appsettings.Development.json",
+  "SelectedNode": "\\FireDrone-2425-4.sln",
   "PreviewInSolutionExplorer": false
 }

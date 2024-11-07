@@ -1,0 +1,8 @@
+C:\Users\anton\Documents\ProyectoCoordinadoEquipo4\src\ControlBackend\obj\Debug\net8.0\ControlBackend.csproj.AssemblyReference.cache
+C:\Users\anton\Documents\ProyectoCoordinadoEquipo4\src\ControlBackend\obj\Debug\net8.0\ControlBackend.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\anton\Documents\ProyectoCoordinadoEquipo4\src\ControlBackend\obj\Debug\net8.0\ControlBackend.AssemblyInfoInputs.cache
+C:\Users\anton\Documents\ProyectoCoordinadoEquipo4\src\ControlBackend\obj\Debug\net8.0\ControlBackend.AssemblyInfo.cs
+C:\Users\anton\Documents\ProyectoCoordinadoEquipo4\src\ControlBackend\obj\Debug\net8.0\ControlBackend.csproj.CoreCompileInputs.cache
+C:\Users\anton\Documents\ProyectoCoordinadoEquipo4\src\ControlBackend\obj\Debug\net8.0\ControlBackend.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\anton\Documents\ProyectoCoordinadoEquipo4\src\ControlBackend\obj\Debug\net8.0\ControlBackend.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\anton\Documents\ProyectoCoordinadoEquipo4\src\ControlBackend\obj\Debug\net8.0\ControlBackend.sourcelink.json
