@@ -1,1 +1,24 @@
+# Ignorar archivos y carpetas generados por Visual Studio
 .vs/
+*.vsidx
+*.bin
+
+# Ignorar archivos en obj/
+**/obj/*.cache
+**/obj/*.dgspec.json
+**/obj/*.g.props
+**/obj/*.g.targets
+**/obj/*.editorconfig
+**/obj/project.assets.json
+**/obj/project.nuget.cache
+**/obj/*.AssemblyInfo.cs
+**/obj/*.AssemblyReference.cache
+**/obj/*.GeneratedMSBuildEditorConfig.editorconfig
+
+# Ignorar archivos temporales específicos de cada proyecto
+src/*/obj/
+tests/*/obj/
+
+# Ignorar carpetas bin/ generadas
+**/bin/
+
