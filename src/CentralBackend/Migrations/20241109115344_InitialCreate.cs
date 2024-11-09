@@ -26,6 +26,22 @@ namespace CentralBackend.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Rutas",
+                columns: table => new
+                {
+                    RutaId = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Estado = table.Column<string>(type: "TEXT", nullable: true),
+                    Riesgo = table.Column<string>(type: "TEXT", nullable: true),
+                    Periodica = table.Column<string>(type: "TEXT", nullable: true),
+                    NumeroPeriodicidad = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Rutas", x => x.RutaId);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "EstacionesBase",
                 columns: table => new
                 {
@@ -68,25 +84,48 @@ namespace CentralBackend.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Rutas",
+                name: "AreaRuta",
                 columns: table => new
                 {
-                    RutaId = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Estado = table.Column<string>(type: "TEXT", nullable: true),
-                    Riesgo = table.Column<string>(type: "TEXT", nullable: true),
-                    Periodica = table.Column<string>(type: "TEXT", nullable: true),
-                    NumeroPeriodicidad = table.Column<int>(type: "INTEGER", nullable: false),
-                    AreaId = table.Column<int>(type: "INTEGER", nullable: false)
+                    AreasAreaId = table.Column<int>(type: "INTEGER", nullable: false),
+                    RutasRutaId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Rutas", x => x.RutaId);
+                    table.PrimaryKey("PK_AreaRuta", x => new { x.AreasAreaId, x.RutasRutaId });
                     table.ForeignKey(
-                        name: "FK_Rutas_Areas_AreaId",
-                        column: x => x.AreaId,
+                        name: "FK_AreaRuta_Areas_AreasAreaId",
+                        column: x => x.AreasAreaId,
                         principalTable: "Areas",
                         principalColumn: "AreaId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AreaRuta_Rutas_RutasRutaId",
+                        column: x => x.RutasRutaId,
+                        principalTable: "Rutas",
+                        principalColumn: "RutaId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PuntosRuta",
+                columns: table => new
+                {
+                    PuntoRutaId = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    X = table.Column<double>(type: "REAL", nullable: false),
+                    Y = table.Column<double>(type: "REAL", nullable: false),
+                    Secuencial = table.Column<int>(type: "INTEGER", nullable: false),
+                    RutaId = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PuntosRuta", x => x.PuntoRutaId);
+                    table.ForeignKey(
+                        name: "FK_PuntosRuta_Rutas_RutaId",
+                        column: x => x.RutaId,
+                        principalTable: "Rutas",
+                        principalColumn: "RutaId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -125,28 +164,6 @@ namespace CentralBackend.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "PuntosRuta",
-                columns: table => new
-                {
-                    PuntoRutaId = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    X = table.Column<double>(type: "REAL", nullable: false),
-                    Y = table.Column<double>(type: "REAL", nullable: false),
-                    Secuencial = table.Column<int>(type: "INTEGER", nullable: false),
-                    RutaId = table.Column<int>(type: "INTEGER", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PuntosRuta", x => x.PuntoRutaId);
-                    table.ForeignKey(
-                        name: "FK_PuntosRuta_Rutas_RutaId",
-                        column: x => x.RutaId,
-                        principalTable: "Rutas",
-                        principalColumn: "RutaId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "PlanesVuelo",
                 columns: table => new
                 {
@@ -172,30 +189,6 @@ namespace CentralBackend.Migrations
                         column: x => x.RutaId,
                         principalTable: "Rutas",
                         principalColumn: "RutaId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Incidencias",
-                columns: table => new
-                {
-                    IncidenciaId = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Informacion = table.Column<string>(type: "TEXT", nullable: true),
-                    Fecha = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    Hora = table.Column<string>(type: "TEXT", nullable: true),
-                    X = table.Column<double>(type: "REAL", nullable: false),
-                    Y = table.Column<double>(type: "REAL", nullable: false),
-                    PlanVueloId = table.Column<int>(type: "INTEGER", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Incidencias", x => x.IncidenciaId);
-                    table.ForeignKey(
-                        name: "FK_Incidencias_PlanesVuelo_PlanVueloId",
-                        column: x => x.PlanVueloId,
-                        principalTable: "PlanesVuelo",
-                        principalColumn: "PlanVueloId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -230,6 +223,57 @@ namespace CentralBackend.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "PuntosPlanVuelo",
+                columns: table => new
+                {
+                    PuntoPlanVueloId = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    X = table.Column<double>(type: "REAL", nullable: false),
+                    Y = table.Column<double>(type: "REAL", nullable: false),
+                    Secuencial = table.Column<int>(type: "INTEGER", nullable: false),
+                    PlanVueloId = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PuntosPlanVuelo", x => x.PuntoPlanVueloId);
+                    table.ForeignKey(
+                        name: "FK_PuntosPlanVuelo_PlanesVuelo_PlanVueloId",
+                        column: x => x.PlanVueloId,
+                        principalTable: "PlanesVuelo",
+                        principalColumn: "PlanVueloId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Incidencias",
+                columns: table => new
+                {
+                    IncidenciaId = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Informacion = table.Column<string>(type: "TEXT", nullable: true),
+                    Fecha = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    Hora = table.Column<string>(type: "TEXT", nullable: true),
+                    X = table.Column<double>(type: "REAL", nullable: false),
+                    Y = table.Column<double>(type: "REAL", nullable: false),
+                    MedicionPlanVueloId = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Incidencias", x => x.IncidenciaId);
+                    table.ForeignKey(
+                        name: "FK_Incidencias_MedicionesPlanVuelo_MedicionPlanVueloId",
+                        column: x => x.MedicionPlanVueloId,
+                        principalTable: "MedicionesPlanVuelo",
+                        principalColumn: "MedicionPlanVueloId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AreaRuta_RutasRutaId",
+                table: "AreaRuta",
+                column: "RutasRutaId");
+
             migrationBuilder.CreateIndex(
                 name: "IX_Drones_EstacionBaseId",
                 table: "Drones",
@@ -251,9 +295,9 @@ namespace CentralBackend.Migrations
                 column: "AreaId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Incidencias_PlanVueloId",
+                name: "IX_Incidencias_MedicionPlanVueloId",
                 table: "Incidencias",
-                column: "PlanVueloId");
+                column: "MedicionPlanVueloId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_MedicionesPlanVuelo_PlanVueloId",
@@ -271,27 +315,33 @@ namespace CentralBackend.Migrations
                 column: "RutaId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_PuntosPlanVuelo_PlanVueloId",
+                table: "PuntosPlanVuelo",
+                column: "PlanVueloId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_PuntosRuta_RutaId",
                 table: "PuntosRuta",
                 column: "RutaId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Rutas_AreaId",
-                table: "Rutas",
-                column: "AreaId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "AreaRuta");
+
+            migrationBuilder.DropTable(
                 name: "Incidencias");
 
             migrationBuilder.DropTable(
-                name: "MedicionesPlanVuelo");
+                name: "PuntosPlanVuelo");
 
             migrationBuilder.DropTable(
                 name: "PuntosRuta");
+
+            migrationBuilder.DropTable(
+                name: "MedicionesPlanVuelo");
 
             migrationBuilder.DropTable(
                 name: "PlanesVuelo");

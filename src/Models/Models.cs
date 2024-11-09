@@ -8,7 +8,9 @@
         public double Y { get; set; }
 
         public ICollection<EstacionBase> EstacionesBase { get; set; }
+
         public ICollection<EstacionControl> EstacionesControl { get; set; }
+
         public ICollection<Ruta> Rutas { get; set; }
     }
 
@@ -66,8 +68,8 @@
         public double X { get; set; }
         public double Y { get; set; }
 
-        public int PlanVueloId { get; set; }
-        public PlanVuelo PlanVuelo { get; set; }
+        public int MedicionPlanVueloId { get; set; }
+        public MedicionPlanVuelo MedicionPlanVuelo { get; set; }
     }
 
     public class MedicionPlanVuelo
@@ -88,6 +90,9 @@
 
         public int PlanVueloId { get; set; }
         public PlanVuelo PlanVuelo { get; set; }
+
+        public ICollection<Incidencia> Incidencias { get; set; }
+
     }
 
     public class PlanVuelo
@@ -103,8 +108,20 @@
         public int RutaId { get; set; }
         public Ruta Ruta { get; set; }
 
-        public ICollection<Incidencia> Incidencias { get; set; }
         public ICollection<MedicionPlanVuelo> MedicionesPlanVuelo { get; set; }
+
+        public ICollection<PuntoPlanVuelo> PuntosPlanVuelo { get; set; }
+    }
+
+    public class PuntoPlanVuelo
+    {
+        public int PuntoPlanVueloId { get; set; }
+        public double X { get; set; }
+        public double Y { get; set; }
+        public int Secuencial { get; set; }
+
+        public int PlanVueloId { get; set; }
+        public PlanVuelo PlanVuelo { get; set; }
     }
 
     public class PuntoRuta
@@ -126,9 +143,10 @@
         public string? Periodica { get; set; }
         public int NumeroPeriodicidad { get; set; }
 
-        public int AreaId { get; set; }
-        public Area Area { get; set; }
-
         public ICollection<PuntoRuta> PuntosRuta { get; set; }
+
+        public ICollection<Area> Areas { get; set; }
+
+        public ICollection<PlanVuelo> PlanesVuelo { get; set; }
     }
 }

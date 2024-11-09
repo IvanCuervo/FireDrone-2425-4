@@ -17,6 +17,21 @@ namespace CentralBackend.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.10");
 
+            modelBuilder.Entity("AreaRuta", b =>
+                {
+                    b.Property<int>("AreasAreaId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("RutasRutaId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("AreasAreaId", "RutasRutaId");
+
+                    b.HasIndex("RutasRutaId");
+
+                    b.ToTable("AreaRuta");
+                });
+
             modelBuilder.Entity("Models.Area", b =>
                 {
                     b.Property<int>("AreaId")
@@ -138,7 +153,7 @@ namespace CentralBackend.Migrations
                     b.Property<string>("Informacion")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("PlanVueloId")
+                    b.Property<int>("MedicionPlanVueloId")
                         .HasColumnType("INTEGER");
 
                     b.Property<double>("X")
@@ -149,7 +164,7 @@ namespace CentralBackend.Migrations
 
                     b.HasKey("IncidenciaId");
 
-                    b.HasIndex("PlanVueloId");
+                    b.HasIndex("MedicionPlanVueloId");
 
                     b.ToTable("Incidencias");
                 });
@@ -236,6 +251,31 @@ namespace CentralBackend.Migrations
                     b.ToTable("PlanesVuelo");
                 });
 
+            modelBuilder.Entity("Models.PuntoPlanVuelo", b =>
+                {
+                    b.Property<int>("PuntoPlanVueloId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("PlanVueloId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Secuencial")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<double>("X")
+                        .HasColumnType("REAL");
+
+                    b.Property<double>("Y")
+                        .HasColumnType("REAL");
+
+                    b.HasKey("PuntoPlanVueloId");
+
+                    b.HasIndex("PlanVueloId");
+
+                    b.ToTable("PuntosPlanVuelo");
+                });
+
             modelBuilder.Entity("Models.PuntoRuta", b =>
                 {
                     b.Property<int>("PuntoRutaId")
@@ -267,9 +307,6 @@ namespace CentralBackend.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("AreaId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("Estado")
                         .HasColumnType("TEXT");
 
@@ -284,9 +321,22 @@ namespace CentralBackend.Migrations
 
                     b.HasKey("RutaId");
 
-                    b.HasIndex("AreaId");
-
                     b.ToTable("Rutas");
+                });
+
+            modelBuilder.Entity("AreaRuta", b =>
+                {
+                    b.HasOne("Models.Area", null)
+                        .WithMany()
+                        .HasForeignKey("AreasAreaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Models.Ruta", null)
+                        .WithMany()
+                        .HasForeignKey("RutasRutaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Models.Dron", b =>
@@ -332,13 +382,13 @@ namespace CentralBackend.Migrations
 
             modelBuilder.Entity("Models.Incidencia", b =>
                 {
-                    b.HasOne("Models.PlanVuelo", "PlanVuelo")
+                    b.HasOne("Models.MedicionPlanVuelo", "MedicionPlanVuelo")
                         .WithMany("Incidencias")
-                        .HasForeignKey("PlanVueloId")
+                        .HasForeignKey("MedicionPlanVueloId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("PlanVuelo");
+                    b.Navigation("MedicionPlanVuelo");
                 });
 
             modelBuilder.Entity("Models.MedicionPlanVuelo", b =>
@@ -361,7 +411,7 @@ namespace CentralBackend.Migrations
                         .IsRequired();
 
                     b.HasOne("Models.Ruta", "Ruta")
-                        .WithMany()
+                        .WithMany("PlanesVuelo")
                         .HasForeignKey("RutaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -369,6 +419,17 @@ namespace CentralBackend.Migrations
                     b.Navigation("Dron");
 
                     b.Navigation("Ruta");
+                });
+
+            modelBuilder.Entity("Models.PuntoPlanVuelo", b =>
+                {
+                    b.HasOne("Models.PlanVuelo", "PlanVuelo")
+                        .WithMany("PuntosPlanVuelo")
+                        .HasForeignKey("PlanVueloId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("PlanVuelo");
                 });
 
             modelBuilder.Entity("Models.PuntoRuta", b =>
@@ -382,24 +443,11 @@ namespace CentralBackend.Migrations
                     b.Navigation("Ruta");
                 });
 
-            modelBuilder.Entity("Models.Ruta", b =>
-                {
-                    b.HasOne("Models.Area", "Area")
-                        .WithMany("Rutas")
-                        .HasForeignKey("AreaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Area");
-                });
-
             modelBuilder.Entity("Models.Area", b =>
                 {
                     b.Navigation("EstacionesBase");
 
                     b.Navigation("EstacionesControl");
-
-                    b.Navigation("Rutas");
                 });
 
             modelBuilder.Entity("Models.Dron", b =>
@@ -417,15 +465,22 @@ namespace CentralBackend.Migrations
                     b.Navigation("Drones");
                 });
 
-            modelBuilder.Entity("Models.PlanVuelo", b =>
+            modelBuilder.Entity("Models.MedicionPlanVuelo", b =>
                 {
                     b.Navigation("Incidencias");
+                });
 
+            modelBuilder.Entity("Models.PlanVuelo", b =>
+                {
                     b.Navigation("MedicionesPlanVuelo");
+
+                    b.Navigation("PuntosPlanVuelo");
                 });
 
             modelBuilder.Entity("Models.Ruta", b =>
                 {
+                    b.Navigation("PlanesVuelo");
+
                     b.Navigation("PuntosRuta");
                 });
 #pragma warning restore 612, 618
