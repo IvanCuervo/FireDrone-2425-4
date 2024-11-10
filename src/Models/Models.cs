@@ -135,12 +135,14 @@
         public Ruta Ruta { get; set; }
     }
 
-public class Ruta
-{
-    public int idRuta { get; set; }
-    public string? estado { get; set; }
-    public string? riesgo { get; set; }
-    public string? periodica { get; set; }
-    public int numeroPeriodico { get; set; }
-    public int idArea { get; set; }
+    public class Ruta
+    {
+        public int idRuta { get; set; }
+        public string? estado { get; set; }
+        public string? riesgo { get; set; }
+        public string? periodica { get; set; }
+        public int numeroPeriodico { get; set; }
+        public int idArea { get; set; }
+    }
+
 }
