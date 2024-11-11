@@ -137,12 +137,16 @@
 
     public class Ruta
     {
-        public int idRuta { get; set; }
-        public string? estado { get; set; }
-        public string? riesgo { get; set; }
-        public string? periodica { get; set; }
-        public int numeroPeriodico { get; set; }
-        public int idArea { get; set; }
-    }
+        public int RutaId { get; set; }
+        public string? Estado { get; set; }
+        public string? Riesgo { get; set; }
+        public string? Periodica { get; set; }
+        public int NumeroPeriodicidad { get; set; }
 
+        public ICollection<PuntoRuta> PuntosRuta { get; set; }
+
+        public ICollection<Area> Areas { get; set; }
+
+        public ICollection<PlanVuelo> PlanesVuelo { get; set; }
+    }
 }

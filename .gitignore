@@ -20,5 +20,6 @@ src/*/obj/
 tests/*/obj/
 
 # Ignorar carpetas bin/ generadas
-**/bin/
+**/bin/*
+**/obj/*
 
