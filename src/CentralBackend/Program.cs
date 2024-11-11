@@ -1,8 +1,8 @@
-
 namespace CentralBackend;
 using CentralBackend.Data;
 using CentralBackend.Hubs;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 
 public class Program
 {
@@ -10,7 +10,13 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        builder.Services.AddControllers();
+        // En la configuración de los servicios:
+        builder.Services.AddControllers()
+            .AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+                options.JsonSerializerOptions.MaxDepth = 64; // O ajusta según lo necesario
+            });
 
         // Add services to the container.
         builder.Services.AddAuthorization();
@@ -19,7 +25,8 @@ public class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
         builder.Services.AddDbContext<AppDbContext>(options =>
-              options.UseSqlite("Data Source=FireDrone-2425-4.db"));
+        options.UseSqlite("Data Source=src\\CentralBackend\\Library.db"));
+
 
         // Opcional: para ver errores de base de datos en desarrollo
         builder.Services.AddDatabaseDeveloperPageExceptionFilter();
@@ -40,7 +47,12 @@ public class Program
 
         var app = builder.Build();
 
-        app.UseCors("AllowSpecificOrigin");
+        app.UseCors(builder => builder
+       .SetIsOriginAllowed((host) => true)
+       .AllowAnyMethod()
+       .AllowAnyHeader()
+       .AllowCredentials()
+       );
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
@@ -55,26 +67,6 @@ public class Program
 
         // Mapeo de SignalR
         app.MapHub<UpdateMapHub>("/updatemaphub");
-
-        //var summaries = new[]
-        //{
-        //    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        //};
-
-        //app.MapGet("/weatherforecast", (HttpContext httpContext) =>
-        //{
-        //    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        //        new WeatherForecast
-        //        {
-        //            Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-        //            TemperatureC = Random.Shared.Next(-20, 55),
-        //            Summary = summaries[Random.Shared.Next(summaries.Length)]
-        //        })
-        //        .ToArray();
-        //    return forecast;
-        //})
-        //.WithName("GetWeatherForecast")
-        //.WithOpenApi();
 
         app.Run();
     }
