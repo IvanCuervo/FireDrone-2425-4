@@ -224,7 +224,7 @@ namespace CentralBackend.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "PuntosPlanVuelo",
+                name: "PuntoPlanVuelo",
                 columns: table => new
                 {
                     PuntoPlanVueloId = table.Column<int>(type: "INTEGER", nullable: false)
@@ -236,9 +236,9 @@ namespace CentralBackend.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PuntosPlanVuelo", x => x.PuntoPlanVueloId);
+                    table.PrimaryKey("PK_PuntoPlanVuelo", x => x.PuntoPlanVueloId);
                     table.ForeignKey(
-                        name: "FK_PuntosPlanVuelo_PlanesVuelo_PlanVueloId",
+                        name: "FK_PuntoPlanVuelo_PlanesVuelo_PlanVueloId",
                         column: x => x.PlanVueloId,
                         principalTable: "PlanesVuelo",
                         principalColumn: "PlanVueloId",
@@ -315,8 +315,8 @@ namespace CentralBackend.Migrations
                 column: "RutaId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PuntosPlanVuelo_PlanVueloId",
-                table: "PuntosPlanVuelo",
+                name: "IX_PuntoPlanVuelo_PlanVueloId",
+                table: "PuntoPlanVuelo",
                 column: "PlanVueloId");
 
             migrationBuilder.CreateIndex(
@@ -335,7 +335,7 @@ namespace CentralBackend.Migrations
                 name: "Incidencias");
 
             migrationBuilder.DropTable(
-                name: "PuntosPlanVuelo");
+                name: "PuntoPlanVuelo");
 
             migrationBuilder.DropTable(
                 name: "PuntosRuta");

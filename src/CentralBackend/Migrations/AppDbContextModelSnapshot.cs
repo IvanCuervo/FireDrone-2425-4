@@ -273,7 +273,7 @@ namespace CentralBackend.Migrations
 
                     b.HasIndex("PlanVueloId");
 
-                    b.ToTable("PuntosPlanVuelo");
+                    b.ToTable("PuntoPlanVuelo");
                 });
 
             modelBuilder.Entity("Models.PuntoRuta", b =>
@@ -307,9 +307,6 @@ namespace CentralBackend.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("AreaId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("Estado")
                         .HasColumnType("TEXT");
 
@@ -323,8 +320,6 @@ namespace CentralBackend.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("RutaId");
-
-                    b.HasIndex("AreaId");
 
                     b.ToTable("Rutas");
                 });
@@ -453,8 +448,6 @@ namespace CentralBackend.Migrations
                     b.Navigation("EstacionesBase");
 
                     b.Navigation("EstacionesControl");
-
-                    b.Navigation("Rutas");
                 });
 
             modelBuilder.Entity("Models.Dron", b =>

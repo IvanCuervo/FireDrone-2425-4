@@ -19,8 +19,5 @@ namespace CentralBackend.Data {
             : base(options)
         {
         }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder options)
-      => options.UseSqlite("Data Source=Library.db");
     }
 }
