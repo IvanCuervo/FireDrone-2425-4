@@ -4,11 +4,35 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inicio</title>
+    <title>Drones</title>
 
     <link rel="stylesheet" href="css/estilos.css">
 
     <script src="https://kit.fontawesome.com/41bcea2ae3.js"></script>
+
+    <style>
+        /* Estilos básicos para el contenedor de los planes */
+        .plan-vuelo-container {
+            width: 80%;
+            margin: auto;
+        }
+
+        .plan-vuelo-item {
+            background-color: #f0f0f0;
+            margin: 5px 0;
+            padding: 10px;
+            cursor: pointer;
+            border: 1px solid #ddd;
+        }
+
+        .plan-vuelo-detalle {
+            display: none;
+            padding: 10px;
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            border-top: none;
+        }
+    </style>
 </head>
 <body id="body">
 
@@ -34,7 +58,7 @@
 
         <div class="options__menu">
 
-            <a href="#" class="selected">
+            <a href="index.html">
                 <div class="option">
                     <i class="fas fa-home" title="Inicio"></i>
                     <h4>Inicio</h4>
@@ -66,7 +90,7 @@
                 </div>
             </a>
 
-            <a href="drones.html">
+            <a href="#" class="selected">
                 <div class="option">
                     <i title="Drones">
                         <svg style="margin: -5px" enable-background="new 0 0 512 512" height="30px" version="1.1" viewBox="0 0 512 512" fill="currentColor" width="30px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g><g><g>
@@ -84,7 +108,10 @@
 
     <main>
         <div>
-            <h1 class="titulo">Inicio</h1>
+            <h1 class="titulo">Drones</h1>
+        </div>
+        <div class="plan-vuelo-container" id="planesVueloContainer">
+
         </div>
     </main>
 
@@ -123,7 +150,56 @@
         });
     </script>
 
-    <script>console.log(new Date())</script>
+    <script>
+        const apiUrlPlanesVuelo = 'http://localhost:5285/api/PlanVuelo';
+
+        async function obtenerPlanesVuelo() {
+            try {
+                const response = await fetch(apiUrlPlanesVuelo);
+                if (!response.ok) {
+                    throw new Error('Error al obtener los planes de vuelo');
+                }
+                const planesVuelo = await response.json();
+
+                //console.log(planesVuelo.$values)
+
+                const container = document.getElementById('planesVueloContainer');
+
+                planesVuelo.$values.forEach(plan => {
+                    // Crear contenedor para cada plan de vuelo
+                    const planItem = document.createElement('div');
+                    planItem.classList.add('plan-vuelo-item');
+                    planItem.innerHTML = `
+                        <strong>Plan de vuelo: ${plan.planVueloId}</strong>
+                        <p>Dron: ${plan.dronId}</p>
+                    `;
+
+                    // Crear sección oculta de detalles
+                    const detalles = document.createElement('div');
+                    detalles.classList.add('plan-vuelo-detalle');
+                    detalles.innerHTML = `
+                        <p>Fecha Inicio: ${plan.fechaInicio}</p>
+                        <p>Ruta: ${plan.rutaId}</p>
+                    `;
+
+                    // Agregar evento para mostrar/ocultar detalles al hacer clic
+                    planItem.addEventListener('click', () => {
+                        detalles.style.display = detalles.style.display === 'none' ? 'block' : 'none';
+                    });
+
+                    // Insertar elementos en el contenedor
+                    container.appendChild(planItem);
+                    container.appendChild(detalles);
+                });
+
+            } catch (error) {
+                console.error(error);
+                alert('Error al cargar los planes de vuelo.');
+            }
+        }
+
+        obtenerPlanesVuelo();
+    </script>
 
 </body>
 </html>
