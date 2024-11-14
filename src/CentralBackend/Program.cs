@@ -25,7 +25,7 @@ public class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
         builder.Services.AddDbContext<AppDbContext>(options =>
-        options.UseSqlite("Data Source=src\\CentralBackend\\Library.db"));
+        options.UseSqlite("Data Source=../../FireDrone-2425.db"));
 
 
         // Opcional: para ver errores de base de datos en desarrollo

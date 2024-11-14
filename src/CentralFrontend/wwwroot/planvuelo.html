@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inicio</title>
+    <title>Plan de vuelo</title>
 
     <link rel="stylesheet" href="css/estilos.css">
 
@@ -21,20 +21,13 @@
     <div class="menu__side" id="menu_side">
 
         <div class="name__page">
-            <i>
-                <svg viewBox="0 0 24 24" width="32" height="32" xmlns="http://www.w3.org/2000/svg">
-                    <g>
-                        <path d="M0 0h24v24H0z" fill="none" />
-                        <path fill="white" d="M12 23a7.5 7.5 0 0 0 7.5-7.5c0-.866-.23-1.697-.5-2.47-1.667 1.647-2.933 2.47-3.8 2.47 3.995-7 1.8-10-4.2-14 .5 5-2.796 7.274-4.138 8.537A7.5 7.5 0 0 0 12 23zm.71-17.765c3.241 2.75 3.257 4.887.753 9.274-.761 1.333.202 2.991 1.737 2.991.688 0 1.384-.2 2.119-.595a5.5 5.5 0 1 1-9.087-5.412c.126-.118.765-.685.793-.71.424-.38.773-.717 1.118-1.086 1.23-1.318 2.114-2.78 2.566-4.462z" fill-rule="nonzero" />
-                    </g>
-                </svg>
-            </i>
+            <i class="fab fa-youtube"></i>
             <h4>ServiDron</h4>
         </div>
 
         <div class="options__menu">
 
-            <a href="#" class="selected">
+            <a href="index.html">
                 <div class="option">
                     <i class="fas fa-home" title="Inicio"></i>
                     <h4>Inicio</h4>
@@ -53,7 +46,7 @@
                 </div>
             </a>
 
-            <a href="planvuelo.html">
+            <a href="#" class="selected">
                 <div class="option">
                     <i title="Plan de vuelo">
                         <svg style="enable-background:new 0 0 24 24; margin: -5px" height="30px" version="1.1" viewBox="0 0 24 24" fill="currentColor" width="30px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><style type="text/css">
@@ -62,7 +55,7 @@
                         <path d="M21.5,7.5C21,7,20.4,6.8,19.8,6.9l-0.6,0C17.5,7,16,7.5,14.7,8.4l-6.6-3c-0.3-0.1-0.6-0.1-0.9,0L4.6,6.9   C4.3,7.1,4.1,7.4,4.1,7.7s0.1,0.6,0.4,0.9l4.8,4l-1.5,1.2l-2.4-1c-0.3-0.1-0.6-0.1-0.9,0l-1.7,1c-0.3,0.2-0.5,0.5-0.5,0.8   s0.1,0.7,0.4,0.9L5,17.3c0.8,0.6,1.8,1,2.8,1c0.8,0,1.5-0.2,2.2-0.6l11.1-6.3c0.8-0.4,1.2-1.3,1.2-2.2c0,0,0,0,0,0   C22.2,8.5,22,7.9,21.5,7.5z M20.1,9.6L9,15.9c-0.9,0.5-2,0.4-2.8-0.2l-1.2-1l0,0l2.5,1.1c0.3,0.1,0.7,0.1,1-0.1l3-2.3   c0.2-0.2,0.4-0.5,0.4-0.8c0-0.3-0.1-0.6-0.4-0.8L6.8,7.9l0.9-0.5l6.6,3.1c0.3,0.2,0.7,0.1,1-0.1c1.1-0.9,2.5-1.4,3.9-1.5l0.6,0   c0.1,0,0.2,0,0.3,0.1c0,0,0.1,0.1,0.1,0.3C20.3,9.4,20.2,9.5,20.1,9.6z" /></g>
                         </svg>
                     </i>
-                    <h4>Inicio</h4>
+                    <h4>Plan de vuelo</h4>
                 </div>
             </a>
 
@@ -84,7 +77,24 @@
 
     <main>
         <div>
-            <h1 class="titulo">Inicio</h1>
+            <h1 class="titulo">Ejecución de plan de vuelo</h1>
+        </div>
+        <div class="conjDesp">
+            <div class="desplegable">
+                <label for="rutas-select">Selecciona una ruta:</label>
+                <select id="rutas-select">
+                    <option value="">...</option>
+                </select>
+            </div>
+            <div class="desplegable">
+                <label for="drones-select">Selecciona un dron:</label>
+                <select id="drones-select">
+                    <option value="">...</option>
+                </select>
+            </div>
+        </div>
+        <div class="boton">
+            <button type="submit" onclick="crearPlanVuelo()">EJECUTAR PLAN DE VUELO</button>
         </div>
     </main>
 
@@ -123,5 +133,100 @@
         });
     </script>
 
+    <script>
+        const apiUrlRutas = 'http://localhost:5285/api/Ruta';
+
+        async function obtenerRutas() {
+            try {
+                const response = await fetch(apiUrlRutas);
+                if (!response.ok) {
+                    throw new Error('Error al obtener las rutas');
+                }
+                const rutas = await response.json();
+
+                const rutasSelect = document.getElementById('rutas-select');
+                rutasSelect.innerHTML = '';
+
+                rutas.$values.forEach(ruta => {
+                    const option = document.createElement('option');
+                    option.value = ruta.rutaId;
+                    option.textContent = ruta.rutaId;
+                    rutasSelect.appendChild(option);
+                });
+            } catch (error) {
+                console.error(error);
+                alert('Error al cargar las rutas.');
+            }
+        }
+
+        obtenerRutas();
+    </script>
+
+    <script>
+        const apiUrlDrones = 'http://localhost:5285/api/Dron';
+
+        async function obtenerDrones() {
+            try {
+                const response = await fetch(apiUrlDrones);
+                if (!response.ok) {
+                    throw new Error('Error al obtener los drones');
+                }
+                const drones = await response.json();
+
+                const dronesSelect = document.getElementById('drones-select');
+                dronesSelect.innerHTML = '';
+
+                drones.$values.forEach(dron => {
+                    const option = document.createElement('option');
+                    option.value = dron.dronId;
+                    option.textContent = dron.dronId;
+                    dronesSelect.appendChild(option);
+                });
+            } catch (error) {
+                console.error(error);
+                alert('Error al cargar los drones.');
+            }
+        }
+
+        obtenerDrones();
+    </script>
+
+    <script>
+        const apiUrlPlanVuelo = 'http://localhost:5285/api/PlanVuelo';
+
+        async function crearPlanVuelo() {
+            const selectRuta = document.getElementById('rutas-select').value;
+            const selectDron = document.getElementById('drones-select').value;
+            const fechaActual = new Date().toISOString();
+            //console.log(selectRuta, selectDron, fechaActual)
+
+            const planVueloDTO = {
+                DronId: document.getElementById('drones-select').value,
+                RutaId: document.getElementById('rutas-select').value,
+                FechaInicio: fechaActual,
+                FechaFin: fechaActual, // CAMBIAR
+                ControlManual: 0 //Falso
+            };
+            try {
+                const response = await fetch(apiUrlPlanVuelo, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(planVueloDTO)
+                });
+
+                if (!response.ok) {
+                    throw new Error('Error al crear el plan de vuelo');
+                }
+
+                const data = await response.json();
+                alert('Plan de vuelo ejecutado con éxito');
+            } catch (error) {
+                console.error(error);
+                alert('Error al ejecutar el plan de vuelo.');
+            }
+        }
+    </script>
 </body>
 </html>

@@ -1,14 +1,37 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8" />
+    <title>Mapa</title>
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inicio</title>
+
+    <link rel="shortcut icon" type="image/x-icon" href="docs/images/favicon.ico" />
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+    <!-- Para icono del avión-->
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="https://masajid390.github.io/BeautifyMarker/leaflet-beautify-marker-icon.css">
+    <script type="text/javascript" src="https://masajid390.github.io/BeautifyMarker/leaflet-beautify-marker-icon.js"></script>
+
+    <link rel="stylesheet" href="https://maxwell-ilai.github.io/Leaflet.SidePanel/dist/leaflet-sidepanel.css" />
+    <script src="https://maxwell-ilai.github.io/Leaflet.SidePanel/dist/leaflet-sidepanel.min.js"></script>
 
     <link rel="stylesheet" href="css/estilos.css">
 
-    <script src="https://kit.fontawesome.com/41bcea2ae3.js"></script>
+    <style>
+        body {
+            padding: 0;
+            margin: 0;
+        }
+
+        html, body, #mapid {
+            height: 100%;
+            width: 100%;
+        }
+    </style>
 </head>
 <body id="body">
 
@@ -21,27 +44,20 @@
     <div class="menu__side" id="menu_side">
 
         <div class="name__page">
-            <i>
-                <svg viewBox="0 0 24 24" width="32" height="32" xmlns="http://www.w3.org/2000/svg">
-                    <g>
-                        <path d="M0 0h24v24H0z" fill="none" />
-                        <path fill="white" d="M12 23a7.5 7.5 0 0 0 7.5-7.5c0-.866-.23-1.697-.5-2.47-1.667 1.647-2.933 2.47-3.8 2.47 3.995-7 1.8-10-4.2-14 .5 5-2.796 7.274-4.138 8.537A7.5 7.5 0 0 0 12 23zm.71-17.765c3.241 2.75 3.257 4.887.753 9.274-.761 1.333.202 2.991 1.737 2.991.688 0 1.384-.2 2.119-.595a5.5 5.5 0 1 1-9.087-5.412c.126-.118.765-.685.793-.71.424-.38.773-.717 1.118-1.086 1.23-1.318 2.114-2.78 2.566-4.462z" fill-rule="nonzero" />
-                    </g>
-                </svg>
-            </i>
+            <i class="fab fa-youtube"></i>
             <h4>ServiDron</h4>
         </div>
 
         <div class="options__menu">
 
-            <a href="#" class="selected">
+            <a href="index.html">
                 <div class="option">
                     <i class="fas fa-home" title="Inicio"></i>
                     <h4>Inicio</h4>
                 </div>
             </a>
 
-            <a href="mapa.html">
+            <a href="#" class="selected">
                 <div class="option">
                     <i title="Mapa">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-geo-alt" viewBox="0 0 16 16">
@@ -62,7 +78,7 @@
                         <path d="M21.5,7.5C21,7,20.4,6.8,19.8,6.9l-0.6,0C17.5,7,16,7.5,14.7,8.4l-6.6-3c-0.3-0.1-0.6-0.1-0.9,0L4.6,6.9   C4.3,7.1,4.1,7.4,4.1,7.7s0.1,0.6,0.4,0.9l4.8,4l-1.5,1.2l-2.4-1c-0.3-0.1-0.6-0.1-0.9,0l-1.7,1c-0.3,0.2-0.5,0.5-0.5,0.8   s0.1,0.7,0.4,0.9L5,17.3c0.8,0.6,1.8,1,2.8,1c0.8,0,1.5-0.2,2.2-0.6l11.1-6.3c0.8-0.4,1.2-1.3,1.2-2.2c0,0,0,0,0,0   C22.2,8.5,22,7.9,21.5,7.5z M20.1,9.6L9,15.9c-0.9,0.5-2,0.4-2.8-0.2l-1.2-1l0,0l2.5,1.1c0.3,0.1,0.7,0.1,1-0.1l3-2.3   c0.2-0.2,0.4-0.5,0.4-0.8c0-0.3-0.1-0.6-0.4-0.8L6.8,7.9l0.9-0.5l6.6,3.1c0.3,0.2,0.7,0.1,1-0.1c1.1-0.9,2.5-1.4,3.9-1.5l0.6,0   c0.1,0,0.2,0,0.3,0.1c0,0,0.1,0.1,0.1,0.3C20.3,9.4,20.2,9.5,20.1,9.6z" /></g>
                         </svg>
                     </i>
-                    <h4>Inicio</h4>
+                    <h4>Plan de vuelo</h4>
                 </div>
             </a>
 
@@ -82,9 +98,28 @@
 
     </div>
 
-    <main>
-        <div>
-            <h1 class="titulo">Inicio</h1>
+
+    <main class="mainMapa">
+        <div id="mapid">
+            <!-- Side Panel left -->
+            <div id="mySidepanelLeft" class="sidepanel" aria-label="side panel" aria-hidden="false">
+                <div class="sidepanel-inner-wrapper">
+                    <a href="#" class="sidebar-tab-link" role="tab" data-tab-link="tab-1">
+                    </a>
+                    <div class="sidepanel-content-wrapper" style="margin-left: -40px">
+                        <div class="sidepanel-content">
+                            <div class="sidepanel-tab-content" data-tab-content="tab-1">
+                                <h4>Drones</h4>
+                                <div id="drone-list"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="sidepanel-toggle-container">
+                    <button class="sidepanel-toggle-button" type="button" aria-label="toggle side panel"></button>
+                </div>
+            </div>
+
         </div>
     </main>
 
@@ -121,6 +156,111 @@
             }
 
         });
+    </script>
+
+    <script>
+        // Creación de mapa con leaflet
+
+        // Se crea un mapa centrado en Gijón
+        var map = L.map('mapid').setView([43.5322, -5.6611], 13);
+
+        L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
+            maxZoom: 20,
+            subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+        }).addTo(map);
+
+        // Capa para mostrar los drones
+        var droneLayer = L.layerGroup().addTo(map);
+
+        // Capa para mostrar las líneas
+        var lineLayer = L.layerGroup().addTo(map);
+
+        var last_positions = {};
+
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.7/signalr.js"></script>
+
+    <script>
+        // Conexión con SignalR y recepción de mensajes
+
+        // Se crea la conexión con SignalR en la URL configurada
+        var connection = new signalR.HubConnectionBuilder()
+            .withUrl("http://localhost:5285/updatemaphub") // CAMBIAR!! AHORA MISMO RUTA CON REFERENCIA A PUERTO
+            .withAutomaticReconnect()
+            .configureLogging(signalR.LogLevel.Debug)
+            .build();
+
+        async function start() {
+            try {
+                await connection.start();
+                console.log("SignalR Connected.");
+            } catch (err) {
+                console.log(err);
+            }
+        };
+
+        connection.onclose(async () => {
+            await start();
+        });
+
+        start();
+
+
+        // Se registra un callback para recibir un mensaje
+        connection.on("UpdateMapNotification", function (message) {
+
+            // Borrar marcadores actuales
+            droneLayer.clearLayers();
+
+            // Tipo de icono
+            var options = {
+                icon: "plane",
+                borderColor: '#b3334f',
+                textColor: '#b3334f'
+            };
+
+            var list = document.getElementById("drone-list");
+            list.replaceChildren();
+
+            // Se representan los drones en el mapa
+            var drones = JSON.parse(message);
+            for (var i = 0; i < drones.length; i++) {
+                // Dibujar icono sobre la posición del dron
+                L.marker([drones[i].Latitude, drones[i].Longitude], {
+                    icon: L.BeautifyIcon.icon(options),
+                    draggable: false
+                }).addTo(droneLayer).bindPopup(drones[i].Name);
+
+                // Dibujar una línea desde la última posición conocida de ese dron
+                if (last_positions[drones[i].Name] !== undefined) {
+                    pts = [
+                        [last_positions[drones[i].Name].Latitude, last_positions[drones[i].Name].Longitude],
+                        [drones[i].Latitude, drones[i].Longitude]
+                    ];
+                    var visual_points = L.polyline(pts, { color: "#FF2C2C" }).addTo(lineLayer);
+                }
+                last_positions[drones[i].Name] = drones[i];
+
+                var tagDrone = document.createElement("h5");
+                var text = document.createTextNode(drones[i].Name);
+                tagDrone.appendChild(text);
+                list.appendChild(tagDrone);
+
+                var tagInfo = document.createElement("p");
+                var text = document.createTextNode(`Lat ${drones[i].Latitude}, Long ${drones[i].Longitude}`);
+                tagInfo.appendChild(text);
+                list.appendChild(tagInfo);
+            }
+            console.log(message);
+        });
+
+
+        const sidepanelLeft = L.control.sidepanel('mySidepanelLeft', {
+            tabsPosition: 'left',
+            startTab: 'tab-1'
+        }).addTo(map);
+
     </script>
 
 </body>
