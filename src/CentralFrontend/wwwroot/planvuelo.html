@@ -205,7 +205,7 @@
                 RutaId: document.getElementById('rutas-select').value,
                 FechaInicio: fechaActual,
                 FechaFin: fechaActual, // CAMBIAR
-                ControlManual: 1 //Falso
+                ControlManual: 0 //Falso
             };
             try {
                 const response = await fetch(apiUrlPlanVuelo, {
