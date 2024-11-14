@@ -1,4 +1,5 @@
 using Serilog;
+using DroneController;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ControlBackend.Controllers
@@ -7,26 +8,34 @@ namespace ControlBackend.Controllers
     [Route("ControlBackend/[controller]")]
     public class DroneController : ControllerBase
     {
-        [HttpGet("status/{id}")]
-        public ActionResult<string> GetDroneStatus([FromRoute] int id)
+        readonly IBroker _pubsub_dron;
+
+        public DroneController(IBroker pubsub)
         {
-            // Log de la solicitud de estado
+            _pubsub_dron = pubsub;
+        }
+
+
+        [HttpGet("status/{id}")]
+        public ActionResult<IEnumerable<string>> GetDroneStatus([FromRoute] int id)
+        {
+
+            // Publicar el comando STATUS_CMD
             Log.Information("Status request for drone {0} received from CENTRALBACKEND", id);
 
-            // Crear y codificar el comando STATUS_CMD
-            var droneCommand = new
+            //Parseamos los datos
+            DroneCommand dron = new DroneCommand()
             {
-                Command = "STATUS_CMD",
+
+                Command = DroneCommand.STATUS_CMD,
                 Arguments = ""
             };
-            var encodedCommand = System.Text.Json.JsonSerializer.Serialize(droneCommand);
 
-            // Simular publicación en la cola
-            Log.Information("Published command to topic: {0}", $"ControlBackend.Controller.{id}");
-            Log.Information("Command: {0}", encodedCommand);
+            //Publicamos en la cola la peticion de datos del dron
+            _pubsub_dron.Publish("ControlBackend.Controller." + id, dron.Encode());
 
             // Retorno de la respuesta
-            return Ok("Command published successfully.");
+            return Ok("");
         }
     }
 }
