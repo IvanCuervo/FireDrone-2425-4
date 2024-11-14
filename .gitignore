@@ -23,3 +23,6 @@ tests/*/obj/
 **/bin/*
 **/obj/*
 
+**FireDrone-2425.db-shm
+**FireDrone-2425.db-wal
+
