@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.Threading;
+using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
+using System.Text;
 
 namespace DroneController
 {
@@ -29,10 +30,9 @@ namespace DroneController
         // Se procesaran en HandleDroneCommand
         public void Run()
         {
-            /*
-			 * FALTA POR COMPLETAR
-			 * *
-			 */
+
+            this.CreateMessageQueue(_droneID);
+            
         }
 
         public void Stop()
@@ -64,19 +64,82 @@ namespace DroneController
         // Crear una cola para recibir comandos del backend control
         private void CreateMessageQueue(string DroneID)
         {
-            /*
-			 * FALTA POR COMPLETAR
-			 * *
-			 */
+            var factory = new ConnectionFactory()
+            {
+                HostName = "localhost",
+                UserName = "guest",
+                Password = "guest"
+            };
+
+
+            using (var connection = factory.CreateConnection())
+            {
+                using (var channel = connection.CreateModel())
+                {
+
+                    channel.QueueDeclare(queue: "ColaDron",
+                    durable: true,
+                    exclusive: false,
+                    autoDelete: false,
+                    arguments: null);
+
+                    channel.BasicQos(prefetchSize: 0, prefetchCount: 1, global: false);
+
+                    var consumer = new EventingBasicConsumer(channel);
+                    consumer.Received += (model, ea) =>
+                    {
+                        var body = ea.Body.ToArray();
+                        var message = Encoding.UTF8.GetString(body);
+                        Console.WriteLine("Recibido {0}", message);
+                        channel.BasicAck(deliveryTag: ea.DeliveryTag,
+                                     multiple: false);
+                    };
+
+                    channel.BasicConsume(queue: "ColaDron",
+                                      autoAck: false,
+                                      consumer: consumer);
+                    
+
+                    Console.WriteLine("Press enter to exit");
+                    Console.ReadLine();
+                }
+            }
         }
 
         // Enviar el estado a través de la cola para recibir al backend control
         private void SendStatus(string message)
-        {
-            /*
-			 * FALTA POR COMPLETAR
-			 * *
-			 */
+        {/*
+            using (var connection = factory.CreateConnection())
+            {
+                using (var channel = connection.CreateModel())
+            {
+
+                    var consumer = new EventingBasicConsumer(channel);
+                    consumer.Received += (model, ea) =>
+                    {
+                        var body = ea.Body.ToArray();
+                        var message = Encoding.UTF8.GetString(body);
+                        var props = ea.BasicProperties;
+
+                        var replyProps = channel.CreateBasicProperties();
+                        replyProps.CorrelationId = props.CorrelationId;
+                        replyProps.Persistent = true;
+
+                        var response = message + "Procesado";
+                        var responseBytes = Encoding.UTF8.GetBytes(response);
+
+                        channel.BasicPublish(exchange: "",
+                                     routingKey: props.ReplyTo,
+                                     basicProperties: replyProps,
+                                     body: responseBytes);
+                        channel.BasicAck(deliveryTag: ea.DeliveryTag,
+                                     multiple: false);
+
+                        Console.WriteLine("Recibido {0}", message);
+                        Console.WriteLine("Enviado {0}", response);
+                    };
+                }
+            }*/
         }
 
         // Gestión de los mensajes de comandos recibidos por el controlador
