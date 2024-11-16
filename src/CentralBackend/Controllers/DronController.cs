@@ -23,5 +23,19 @@ namespace CentralBackend.Controllers
             var drones = await _context.Drones.ToListAsync();
             return Ok(drones);
         }
+
+        // GET: api/Dron/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Dron>> GetDron(int id)
+        {
+            var dron = await _context.Drones.FindAsync(id);
+
+            if (dron == null)
+            {
+                return NotFound();
+            }
+
+            return dron;
+        }
     }
 }

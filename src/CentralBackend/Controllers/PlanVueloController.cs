@@ -142,5 +142,52 @@ namespace CentralBackend.Controllers
         {
             return _context.PlanesVuelo.Any(e => e.PlanVueloId == id);
         }
+
+
+        // PUT: api/PlanVuelo/5/estado
+        [HttpPut("{id}/controlManual")]
+        public async Task<IActionResult> UpdateEstado(int id, [FromBody] int nuevoModo)
+        {
+            var planVuelo = await _context.PlanesVuelo.FindAsync(id);
+
+            if (planVuelo == null)
+            {
+                return NotFound();
+            }
+
+            planVuelo.ControlManual = nuevoModo;
+
+            _context.Entry(planVuelo).Property(p => p.ControlManual).IsModified = true;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+
+                // Llamada api update planes de vuelo
+                using (var httpClient = new HttpClient())
+                {
+                    var notificationApiUrl = $"http://localhost:5285/api/UpdatePlanesVuelo?id={id}"; // CAMBIAR!! AHORA MISMO RUTA CON REFERENCIA A PUERTO
+                    var response = await httpClient.PostAsync(notificationApiUrl, null);
+                    
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        return StatusCode((int)response.StatusCode, "Error al notificar la actualización del plan de vuelo.");
+                    }
+                }
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!PlanVueloExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+        }
     }
 }
