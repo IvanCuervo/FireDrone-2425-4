@@ -25,7 +25,7 @@ public class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
         builder.Services.AddDbContext<AppDbContext>(options =>
-        options.UseSqlite("Data Source=../../FireDrone-2425.db"));
+        options.UseSqlite("Data Source=../../FireDrone-2425-4.db"));
 
 
         // Opcional: para ver errores de base de datos en desarrollo
@@ -67,6 +67,9 @@ public class Program
 
         // Mapeo de SignalR
         app.MapHub<UpdateMapHub>("/updatemaphub");
+
+        // Mapeo del SignalR
+        app.MapHub<UpdatePlanesVueloHub>("/updateplanesvuelohub");
 
         app.Run();
     }

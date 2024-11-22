@@ -6,12 +6,12 @@
         public int AreaId { get; set; }
         public double X { get; set; }
         public double Y { get; set; }
+
+        public ICollection<EstacionBase> EstacionesBase { get; set; } = new List<EstacionBase>();
     
-        public ICollection<EstacionBase> EstacionesBase { get; set; }
+        public ICollection<EstacionControl> EstacionesControl { get; set; } = new List<EstacionControl>();
     
-        public ICollection<EstacionControl> EstacionesControl { get; set; }
-    
-        public ICollection<Ruta> Rutas { get; set; }
+        public ICollection<Ruta> Rutas { get; set; } = new List<Ruta>();
     }
     
     public class Dron
@@ -27,12 +27,12 @@
         public string? Sensores { get; set; }
     
         public int EstacionBaseId { get; set; }
-        public EstacionBase EstacionBase { get; set; }
+        public EstacionBase? EstacionBase { get; set; }
     
         public int EstacionControlId { get; set; }
-        public EstacionControl EstacionControl { get; set; }
+        public EstacionControl? EstacionControl { get; set; }
     
-        public ICollection<PlanVuelo> PlanesVuelo { get; set; }
+        public ICollection<PlanVuelo> PlanesVuelo { get; set; } = new List<PlanVuelo>();
     }
     
     public class EstacionBase
@@ -42,9 +42,9 @@
         public double Y { get; set; }
     
         public int AreaId { get; set; }
-        public Area Area { get; set; }
+        public Area? Area { get; set; }
     
-        public ICollection<Dron> Drones { get; set; }
+        public ICollection<Dron> Drones { get; set; } = new List<Dron>();
     }
     
     public class EstacionControl
@@ -54,9 +54,9 @@
         public double Y { get; set; }
     
         public int AreaId { get; set; }
-        public Area Area { get; set; }
+        public Area? Area { get; set; }
     
-        public ICollection<Dron> Drones { get; set; }
+        public ICollection<Dron> Drones { get; set; } = new List<Dron>();
     }
     
     public class Incidencia
@@ -68,7 +68,7 @@
         public double Y { get; set; }
     
         public int MedicionPlanVueloId { get; set; }
-        public MedicionPlanVuelo MedicionPlanVuelo { get; set; }
+        public MedicionPlanVuelo? MedicionPlanVuelo { get; set; }
     }
     
     public class MedicionPlanVuelo
@@ -87,9 +87,9 @@
         public string? SensoresActivados { get; set; }
     
         public int PlanVueloId { get; set; }
-        public PlanVuelo PlanVuelo { get; set; }
+        public PlanVuelo? PlanVuelo { get; set; }
     
-        public ICollection<Incidencia> Incidencias { get; set; }
+        public ICollection<Incidencia> Incidencias { get; set; } = new List<Incidencia>();
     
     }
     
@@ -101,14 +101,14 @@
         public int ControlManual { get; set; }
     
         public int DronId { get; set; }
-        public Dron Dron { get; set; }
+        public Dron? Dron { get; set; }
     
         public int RutaId { get; set; }
-        public Ruta Ruta { get; set; }
+        public Ruta? Ruta { get; set; }
     
-        public ICollection<MedicionPlanVuelo> MedicionesPlanVuelo { get; set; }
+        public ICollection<MedicionPlanVuelo> MedicionesPlanVuelo { get; set; } = new List<MedicionPlanVuelo>();
     
-        public ICollection<PuntoPlanVuelo> PuntosPlanVuelo { get; set; }
+        public ICollection<PuntoPlanVuelo> PuntosPlanVuelo { get; set; } = new List<PuntoPlanVuelo>();
     }
     
     public class PuntoPlanVuelo
@@ -119,7 +119,7 @@
         public int Secuencial { get; set; }
     
         public int PlanVueloId { get; set; }
-        public PlanVuelo PlanVuelo { get; set; }
+        public PlanVuelo? PlanVuelo { get; set; }
     }
     
     public class PuntoRuta
@@ -130,7 +130,7 @@
         public int Secuencial { get; set; }
     
         public int RutaId { get; set; }
-        public Ruta Ruta { get; set; }
+        public Ruta? Ruta { get; set; }
     }
     
     public class Ruta
@@ -141,10 +141,10 @@
         public string? Periodica { get; set; }
         public int NumeroPeriodicidad { get; set; }
     
-        public ICollection<PuntoRuta> PuntosRuta { get; set; }
+        public ICollection<PuntoRuta> PuntosRuta { get; set; } = new List<PuntoRuta>();
     
-        public ICollection<Area> Areas { get; set; }
+        public ICollection<Area> Areas { get; set; } = new List<Area>();
     
-        public ICollection<PlanVuelo> PlanesVuelo { get; set; }
+        public ICollection<PlanVuelo> PlanesVuelo { get; set; } = new List<PlanVuelo>();
     }
 }

@@ -25,7 +25,7 @@ public class Program
 
         // Agregar el contexto de la base de datos con SQLite
         builder.Services.AddDbContext<AppDbContext>(options =>
-            options.UseSqlite("Data Source=MyDatabase.db")); // Cambia el nombre de la base de datos según lo desees
+            options.UseSqlite("Data Source=MyDatabase-4.db"));
 
         // Para generar información de depuración en caso de error
         builder.Services.AddDatabaseDeveloperPageExceptionFilter();
