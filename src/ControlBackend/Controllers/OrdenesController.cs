@@ -1,80 +1,101 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using ControlBackend.Interfaces;
+using ControlBackend.Servicios;
+using DroneController;
+using Microsoft.AspNetCore.Mvc;
+using Models;
+using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;
 
+
+
 namespace ControlBackend.Controllers
 {
+
     [Route("api/[controller]")]
     [ApiController]
     public class OrdenesController : ControllerBase
     {
 
+        readonly IBroker _publicacionPlanVuelo;
 
-        [HttpGet]
-        public ActionResult<IEnumerable<string>> Get()
+        public OrdenesController(IBroker publicacionPlanVuelo)
         {
-            var factory = new ConnectionFactory()
-            {
-                HostName = "localhost",
-                UserName = "guest",
-                Password = "guest"
+            _publicacionPlanVuelo = publicacionPlanVuelo;
+        }
+
+        [HttpPost("inicio")]
+        public ActionResult IniciarPlanVuelo()
+        {
+            var waypoints = new List<Waypoint>
+{
+                new Waypoint
+                {
+                    Latitude = 37.7749,
+                    Longitude = -122.4194,
+                    Altitude = 100.0,
+                    Speed = 50.0
+                },
+                new Waypoint
+                {
+                    Latitude = 34.0522,
+                    Longitude = -118.2437,
+                    Altitude = 150.0,
+                    Speed = 60.0
+                },
+                new Waypoint
+                {
+                    Latitude = 40.7128,
+                    Longitude = -74.006,
+                    Altitude = 200.0,
+                    Speed = 70.0
+                }
             };
 
-            using (var connection = factory.CreateConnection())
+            string waypointsJson = JsonConvert.SerializeObject(waypoints);
+
+
+
+            DroneCommand dron = new DroneCommand()
             {
-                using (var channel = connection.CreateModel())
-                {
+                Command = DroneCommand.START_FLIGHT_PLAN_CMD,
+                Arguments = waypointsJson
+            };
 
-                    channel.QueueDeclare(queue: "ColaDron",
-                    durable: true,
-                    exclusive: false,
-                    autoDelete: false,
-                    arguments: null);
+            _publicacionPlanVuelo.Publish("ColaDron" + 1, dron.Codificar());
 
+            return Ok();
+        }
 
-                    var queueName = channel.QueueDeclare().QueueName;
+        [HttpPost("parar")]
+        public ActionResult PararPlanVuelo()
+        {
 
-                    var corrId = Guid.NewGuid().ToString();
-                    var props = channel.CreateBasicProperties();
-                    props.ReplyTo = queueName;
-                    props.CorrelationId = corrId;
-                    props.Persistent = true;
+            DroneCommand dron = new DroneCommand()
+            {
+                Command = DroneCommand.STOP_FLIGHT_PLAN_CMD,
+                Arguments = ""
+            };
 
-                    Random a = new Random();
-                    int numero = a.Next(5);
-                    string message = numero.ToString();
-                    var body = Encoding.UTF8.GetBytes(message);
+            _publicacionPlanVuelo.Publish("ColaDron" + 1, dron.Codificar());
 
-                    channel.BasicPublish(exchange: "",
-                                    routingKey: "ColaDron",
-                                    basicProperties: props,
-                                    body: body);
-                    Console.WriteLine("Enviado {0}", message);
+            return Ok();
+        }
 
+        [HttpPost("estadodron/{id}")]
+        public ActionResult EstadoDron(int id)
+        {
 
-                    var consumer = new EventingBasicConsumer(channel);
-                    consumer.Received += (model, ea) =>
-                    {
-                        if (ea.BasicProperties.CorrelationId == corrId)
-                        {
-                            string messagerecv = Encoding.UTF8.GetString(ea.Body.ToArray());
-                            Console.WriteLine("Recibido {0}", messagerecv);
-                        }
+            DroneCommand dron = new DroneCommand()
+            {
+                Command = DroneCommand.STATUS_CMD,
+                Arguments = ""
+            };
 
-                    };
+            _publicacionPlanVuelo.Publish("ColaDron" + id, dron.Codificar());
 
-                    channel.BasicConsume(queue: queueName,
-                                      autoAck: false,
-                                      consumer: consumer);
-                    Console.WriteLine("Press enter to exit");
-                    Console.ReadLine();
-
-
-                }
-            }
-
-            return new string[] { "value1", "value2" };
+            return Ok();
         }
     }
 }

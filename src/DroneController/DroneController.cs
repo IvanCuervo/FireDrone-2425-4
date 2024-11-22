@@ -1,16 +1,26 @@
-﻿using Newtonsoft.Json;
+﻿using Azure;
+using Models;
+using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using RabbitMQ.Client.Framing.Impl;
 using System.Text;
 
 namespace DroneController
 {
     public class DroneController
     {
+        
         string _droneID;
         string _droneDriver;
 
         IDroneDriver _drone;
+
+        const string EXCHANGE = "amq.topic";
+        IConnection _connection;
+        IModel _channel;
+        string _queueName;
+
 
         public DroneController(string droneID, string droneDriver)
         {
@@ -31,16 +41,28 @@ namespace DroneController
         public void Run()
         {
 
-            this.CreateMessageQueue(_droneID);
-            
+            var consumer = new EventingBasicConsumer(_channel);
+            consumer.Received += (model, ea) =>
+            {
+                var body = ea.Body.ToArray();
+                string commandtext = Encoding.UTF8.GetString(body);
+                HandleDroneCommand(commandtext);
+            };
+
+            //Recepcion de datos 
+            _channel.BasicConsume(queue: _queueName,
+                autoAck: true,
+                consumer: consumer);
         }
 
         public void Stop()
         {
-            /*
-			 * FALTA POR COMPLETAR
-			 * *
-			 */
+            if (_connection != null && _channel != null){
+                _connection.Close();
+                _connection.Dispose();
+                _channel.Close();
+                _channel.Dispose();
+            }
         }
 
         // Se instancia el driver de forma dinámica. 
@@ -64,92 +86,48 @@ namespace DroneController
         // Crear una cola para recibir comandos del backend control
         private void CreateMessageQueue(string DroneID)
         {
-            var factory = new ConnectionFactory()
-            {
-                HostName = "localhost",
-                UserName = "guest",
-                Password = "guest"
-            };
+            var factory = new ConnectionFactory();
 
+            _connection = factory.CreateConnection();
+            _channel = _connection.CreateModel();
+            _queueName = _channel.QueueDeclare();
 
-            using (var connection = factory.CreateConnection())
-            {
-                using (var channel = connection.CreateModel())
-                {
+            var _routingKey = "ColaDron" + _droneID;
 
-                    channel.QueueDeclare(queue: "ColaDron",
-                    durable: true,
-                    exclusive: false,
-                    autoDelete: false,
-                    arguments: null);
-
-                    channel.BasicQos(prefetchSize: 0, prefetchCount: 1, global: false);
-
-                    var consumer = new EventingBasicConsumer(channel);
-                    consumer.Received += (model, ea) =>
-                    {
-                        var body = ea.Body.ToArray();
-                        var message = Encoding.UTF8.GetString(body);
-                        Console.WriteLine("Recibido {0}", message);
-                        channel.BasicAck(deliveryTag: ea.DeliveryTag,
-                                     multiple: false);
-                    };
-
-                    channel.BasicConsume(queue: "ColaDron",
-                                      autoAck: false,
-                                      consumer: consumer);
-                    
-
-                    Console.WriteLine("Press enter to exit");
-                    Console.ReadLine();
-                }
-            }
+            _channel.QueueBind(queue: _queueName,
+                exchange: EXCHANGE,
+                routingKey: _routingKey);
         }
 
         // Enviar el estado a través de la cola para recibir al backend control
         private void SendStatus(string message)
-        {/*
-            using (var connection = factory.CreateConnection())
-            {
-                using (var channel = connection.CreateModel())
-            {
+        {
+            if (_channel != null && _drone != null) { 
+                    
+                DroneStatus estado = _drone.GetStatus();
 
-                    var consumer = new EventingBasicConsumer(channel);
-                    consumer.Received += (model, ea) =>
-                    {
-                        var body = ea.Body.ToArray();
-                        var message = Encoding.UTF8.GetString(body);
-                        var props = ea.BasicProperties;
+                var body = Encoding.UTF8.GetBytes(message);
+                Console.WriteLine("Estado del Dron: " + message);
 
-                        var replyProps = channel.CreateBasicProperties();
-                        replyProps.CorrelationId = props.CorrelationId;
-                        replyProps.Persistent = true;
+                _channel.BasicPublish(exchange: EXCHANGE,
+                    routingKey: "Estado." + _droneID,
+                    mandatory: false,
+                    basicProperties: null,
+                    body: body);
 
-                        var response = message + "Procesado";
-                        var responseBytes = Encoding.UTF8.GetBytes(response);
-
-                        channel.BasicPublish(exchange: "",
-                                     routingKey: props.ReplyTo,
-                                     basicProperties: replyProps,
-                                     body: responseBytes);
-                        channel.BasicAck(deliveryTag: ea.DeliveryTag,
-                                     multiple: false);
-
-                        Console.WriteLine("Recibido {0}", message);
-                        Console.WriteLine("Enviado {0}", response);
-                    };
-                }
-            }*/
+            }
         }
 
         // Gestión de los mensajes de comandos recibidos por el controlador
         // Si se añaden más mensajes se debería gestionar con una tabla
         private void HandleDroneCommand(string commandtext)
         {
-            // Decodificar el mensaje
-            DroneCommand command = JsonConvert.DeserializeObject<DroneCommand>(commandtext);
+
+           // Decodificar el mensaje
+           DroneCommand command = JsonConvert.DeserializeObject<DroneCommand>(commandtext);
 
             Log.Debug($"Executing drone command {command.Command}");
+
 
             if (command.Command == DroneCommand.START_FLIGHT_PLAN_CMD)
             {

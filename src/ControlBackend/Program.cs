@@ -2,7 +2,10 @@
 namespace ControlBackend;
 
 using System;
+using ControlBackend.Broker;
 using ControlBackend.Data;
+using ControlBackend.Interfaces;
+using ControlBackend.Servicios;
 using Microsoft.EntityFrameworkCore;
 
 public class Program
@@ -26,6 +29,11 @@ public class Program
 
         // Para generar información de depuración en caso de error
         builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
+        IBroker conexion = new RabbitMqBroker("localhost", "guest", "guest");
+        builder.Services.AddSingleton<IBroker>(conexion);
+
+        conexion.Subscribe("Estado.*", new ReceptorMensajes());
 
         var app = builder.Build();
 

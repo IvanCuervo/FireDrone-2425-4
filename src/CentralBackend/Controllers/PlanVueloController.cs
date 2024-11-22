@@ -9,6 +9,8 @@ using CentralBackend.Data;
 using Models;
 using CentralBackend.DTOs;
 using Humanizer;
+using CentralBackend.Services;
+using System.Net.Http.Headers;
 
 namespace CentralBackend.Controllers
 {
@@ -17,10 +19,18 @@ namespace CentralBackend.Controllers
     public class PlanVueloController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private readonly PlanVueloService _service;
 
         public PlanVueloController(AppDbContext context)
         {
             _context = context;
+
+            HttpClient _client = new HttpClient();
+            _client.BaseAddress = new Uri("http://localhost:5057/");
+            _client.DefaultRequestHeaders.Accept.Clear();
+            _client.DefaultRequestHeaders.Accept.Add(
+            new MediaTypeWithQualityHeaderValue("application/json"));
+            _service = new PlanVueloService(_client);
         }
 
         // GET: api/PlanVuelo
@@ -111,7 +121,8 @@ namespace CentralBackend.Controllers
 
             // Comprobar si se guardo el plan de vuelo en la base de datos
             if (savedChanges > 0)
-            {   
+            {
+                _service.CrearPlanVuelo(planVuelo.PlanVueloId);
                 return CreatedAtAction(nameof(GetPlanVuelo), new { id = planVuelo.PlanVueloId }, planVuelo);
             }
             else
