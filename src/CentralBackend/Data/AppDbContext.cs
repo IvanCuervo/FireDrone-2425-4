@@ -14,6 +14,7 @@ namespace CentralBackend.Data {
         public DbSet<PlanVuelo> PlanesVuelo { get; set; }
         public DbSet<PuntoRuta> PuntosRuta { get; set; }
         public DbSet<Ruta> Rutas { get; set; }
+        public DbSet<PuntoPlanVuelo> PuntosPlanVuelo { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options)
             : base(options)

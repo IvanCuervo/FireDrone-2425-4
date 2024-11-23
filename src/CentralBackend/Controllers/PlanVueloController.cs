@@ -122,8 +122,50 @@ namespace CentralBackend.Controllers
             // Comprobar si se guardo el plan de vuelo en la base de datos
             if (savedChanges > 0)
             {
-                _service.CrearPlanVuelo(planVuelo.PlanVueloId);
-                return CreatedAtAction(nameof(GetPlanVuelo), new { id = planVuelo.PlanVueloId }, planVuelo);
+                // Anadir puntos
+                var puntosRuta = await _context.PuntosRuta
+                    .Where(p => p.RutaId == planVueloDto.RutaId) // Filtrar por el campo RutaId
+                    .OrderBy(p => p.Secuencial)                  // Ordenar por el campo Secuencia
+                    .ToListAsync();
+                // Convertir a PuntosPlanVuelo
+                var puntosPlanVuelo = puntosRuta.Select(p => new PuntoPlanVuelo
+                {
+                    X = p.X,
+                    Y = p.Y,
+                    Secuencial = p.Secuencial,
+                    PlanVueloId = planVuelo.PlanVueloId,
+                }).ToList();
+                // Anadir estación base como ultimo punto
+                var estBase = await _context.EstacionesBase.FindAsync(dron.EstacionBaseId);
+                if (estBase != null)
+                {
+                    puntosPlanVuelo.Add(new PuntoPlanVuelo
+                    {
+                        X = estBase.X,
+                        Y = estBase.Y,
+                        Secuencial = puntosPlanVuelo.Count + 1,
+                        PlanVueloId = planVuelo.PlanVueloId,
+                    });
+                    foreach (var punto in puntosPlanVuelo)
+                    {
+                        _context.PuntosPlanVuelo.Add(punto); // Agregar cada punto a la bd
+                    }
+                    savedChanges = await _context.SaveChangesAsync();
+                    if (savedChanges > 0)
+                    {
+                        // Llamada servicio
+                        _service.CrearPlanVuelo(planVuelo.PlanVueloId);
+                        return CreatedAtAction(nameof(GetPlanVuelo), new { id = planVuelo.PlanVueloId }, planVuelo);
+                    }
+                    else
+                    {
+                        return StatusCode(500, "Error al guardar los puntos del plan de vuelo.");
+                    }
+                }
+                else
+                {
+                    return StatusCode(500, "No se ha encontrado la estación base.");
+                }
             }
             else
             {
