@@ -9,6 +9,8 @@ using CentralBackend.Data;
 using Models;
 using CentralBackend.DTOs;
 using Humanizer;
+using CentralBackend.Services;
+using System.Net.Http.Headers;
 
 namespace CentralBackend.Controllers
 {
@@ -17,10 +19,18 @@ namespace CentralBackend.Controllers
     public class PlanVueloController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private readonly PlanVueloService _service;
 
         public PlanVueloController(AppDbContext context)
         {
             _context = context;
+
+            HttpClient _client = new HttpClient();
+            _client.BaseAddress = new Uri("http://localhost:5057/");
+            _client.DefaultRequestHeaders.Accept.Clear();
+            _client.DefaultRequestHeaders.Accept.Add(
+            new MediaTypeWithQualityHeaderValue("application/json"));
+            _service = new PlanVueloService(_client);
         }
 
         // GET: api/PlanVuelo
@@ -111,8 +121,51 @@ namespace CentralBackend.Controllers
 
             // Comprobar si se guardo el plan de vuelo en la base de datos
             if (savedChanges > 0)
-            {   
-                return CreatedAtAction(nameof(GetPlanVuelo), new { id = planVuelo.PlanVueloId }, planVuelo);
+            {
+                // Anadir puntos
+                var puntosRuta = await _context.PuntosRuta
+                    .Where(p => p.RutaId == planVueloDto.RutaId) // Filtrar por el campo RutaId
+                    .OrderBy(p => p.Secuencial)                  // Ordenar por el campo Secuencia
+                    .ToListAsync();
+                // Convertir a PuntosPlanVuelo
+                var puntosPlanVuelo = puntosRuta.Select(p => new PuntoPlanVuelo
+                {
+                    X = p.X,
+                    Y = p.Y,
+                    Secuencial = p.Secuencial,
+                    PlanVueloId = planVuelo.PlanVueloId,
+                }).ToList();
+                // Anadir estación base como ultimo punto
+                var estBase = await _context.EstacionesBase.FindAsync(dron.EstacionBaseId);
+                if (estBase != null)
+                {
+                    puntosPlanVuelo.Add(new PuntoPlanVuelo
+                    {
+                        X = estBase.X,
+                        Y = estBase.Y,
+                        Secuencial = puntosPlanVuelo.Count + 1,
+                        PlanVueloId = planVuelo.PlanVueloId,
+                    });
+                    foreach (var punto in puntosPlanVuelo)
+                    {
+                        _context.PuntosPlanVuelo.Add(punto); // Agregar cada punto a la bd
+                    }
+                    savedChanges = await _context.SaveChangesAsync();
+                    if (savedChanges > 0)
+                    {
+                        // Llamada servicio
+                        _service.CrearPlanVuelo(planVuelo.PlanVueloId);
+                        return CreatedAtAction(nameof(GetPlanVuelo), new { id = planVuelo.PlanVueloId }, planVuelo);
+                    }
+                    else
+                    {
+                        return StatusCode(500, "Error al guardar los puntos del plan de vuelo.");
+                    }
+                }
+                else
+                {
+                    return StatusCode(500, "No se ha encontrado la estación base.");
+                }
             }
             else
             {
@@ -141,6 +194,53 @@ namespace CentralBackend.Controllers
         private bool PlanVueloExists(int id)
         {
             return _context.PlanesVuelo.Any(e => e.PlanVueloId == id);
+        }
+
+
+        // PUT: api/PlanVuelo/5/estado
+        [HttpPut("{id}/controlManual")]
+        public async Task<IActionResult> UpdateEstado(int id, [FromBody] int nuevoModo)
+        {
+            var planVuelo = await _context.PlanesVuelo.FindAsync(id);
+
+            if (planVuelo == null)
+            {
+                return NotFound();
+            }
+
+            planVuelo.ControlManual = nuevoModo;
+
+            _context.Entry(planVuelo).Property(p => p.ControlManual).IsModified = true;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+
+                // Llamada api update planes de vuelo
+                using (var httpClient = new HttpClient())
+                {
+                    var notificationApiUrl = $"http://localhost:5285/api/UpdatePlanesVuelo?id={id}"; // CAMBIAR!! AHORA MISMO RUTA CON REFERENCIA A PUERTO
+                    var response = await httpClient.PostAsync(notificationApiUrl, null);
+                    
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        return StatusCode((int)response.StatusCode, "Error al notificar la actualización del plan de vuelo.");
+                    }
+                }
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!PlanVueloExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
         }
     }
 }

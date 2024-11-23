@@ -26,3 +26,6 @@ tests/*/obj/
 **FireDrone-2425.db-shm
 **FireDrone-2425.db-wal
 
+*.csproj.user
+
+

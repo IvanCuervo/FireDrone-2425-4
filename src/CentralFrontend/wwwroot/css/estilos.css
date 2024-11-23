@@ -1,6 +1,130 @@
 ﻿@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300;1,400;1,600;1,700;1,800&display=swap');
 
 /*------*/
+.plan-vuelo-container {
+            width: 80%;
+            margin: auto;
+}
+
+.plan-vuelo-item {
+    background-color: #f0f0f0;
+    margin-top: 10px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    position: relative;
+}
+
+.plan-vuelo-detalle {
+    display: none;
+    padding: 10px;
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-top: none;
+    margin: 0px 10px;
+}
+
+.boton-detalle {
+    height: 35px;
+    width: 35px;
+    border-radius: 20px;
+    margin-top: 5px;
+    margin-right: 5px;
+    cursor: pointer;
+    background-color: transparent;
+    transition: background-color 0.3s;
+}
+
+.boton-detalle:hover {
+    background-color: #c1c1c1;
+}
+
+.boton-detalle svg {
+    transition: transform 0.3s;
+}
+
+.rotado {
+    transform: rotate(180deg);
+}
+
+.boton-cambiar {
+    height: 30px; 
+    width: 150px; 
+    font-size: 14px; 
+    background-color: #1783db;
+    border-radius: 5px; 
+    border: none;
+    cursor: pointer;
+}
+
+.boton-cambiar:hover {
+    height: 30px;
+    width: 150px;
+    font-size: 14px;
+    background-color: #126bb3;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+}
+
+.boton-anadir {
+    height: 30px;
+    width: 100px;
+    font-size: 14px;
+    background-color: #42a546;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+}
+
+.boton-anadir:hover {
+    height: 30px;
+    width: 100px;
+    font-size: 14px;
+    background-color: #459348;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+}
+
+.boton-anadir:disabled {
+    height: 30px;
+    width: 100px;
+    font-size: 14px;
+    background-color: #42a5464f;
+    border-radius: 5px;
+    border: none;
+    cursor: initial;
+}
+
+.boton-casa {
+    height: 30px; 
+    width: 150px; 
+    font-size: 14px; 
+    background-color: #e10000; 
+    border-radius: 5px; 
+    border: none;
+    cursor: pointer;
+}
+
+.boton-casa:hover {
+    height: 30px;
+    width: 150px;
+    font-size: 14px;
+    background-color: #bf0101;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+}
+
+.textfield {
+    height: 30px;
+    width: 170px;
+    margin: 0 5px;
+    border-radius: 5px;
+    padding: 0 2px;
+    font-size: 15px;
+}
+
 .titulo {
     font-size: 32px;
     font-family: arial;
@@ -43,12 +167,25 @@
     width: 300px;
     height: 50px;
     border-radius: 10px;
-    background-color: #f2f2f2;
+    background-color: #1783db;
+    border: none;
+    font-size: 16px;
 }
 
 .boton button:hover {
     cursor: pointer;
     background-color: #d8d8d8;
+}
+
+.boton button:hover {
+    width: 300px;
+    height: 50px;
+    border-radius: 10px;
+    background-color: #1783db;
+    border: none;
+    font-size: 16px;
+    background-color: #126bb3;
+    cursor: pointer;
 }
 
 .mainMapa {

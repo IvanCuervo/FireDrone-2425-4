@@ -133,7 +133,7 @@ namespace DroneController
             _task = Task.Factory.StartNew(() =>
             {
                 StartSimulation(waypoints);
-
+                
                 while (StepSimulation())
                 {
                     if (token.IsCancellationRequested)

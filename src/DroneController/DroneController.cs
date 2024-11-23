@@ -1,15 +1,26 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Threading;
+﻿using Azure;
+using Models;
+using Newtonsoft.Json;
+using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
+using RabbitMQ.Client.Framing.Impl;
+using System.Text;
 
 namespace DroneController
 {
     public class DroneController
     {
+        
         string _droneID;
         string _droneDriver;
 
         IDroneDriver _drone;
+
+        const string EXCHANGE = "amq.topic";
+        IConnection _connection;
+        IModel _channel;
+        string _queueName;
+
 
         public DroneController(string droneID, string droneDriver)
         {
@@ -29,18 +40,29 @@ namespace DroneController
         // Se procesaran en HandleDroneCommand
         public void Run()
         {
-            /*
-			 * FALTA POR COMPLETAR
-			 * *
-			 */
+
+            var consumer = new EventingBasicConsumer(_channel);
+            consumer.Received += (model, ea) =>
+            {
+                var body = ea.Body.ToArray();
+                string commandtext = Encoding.UTF8.GetString(body);
+                HandleDroneCommand(commandtext);
+            };
+
+            //Recepcion de datos 
+            _channel.BasicConsume(queue: _queueName,
+                autoAck: true,
+                consumer: consumer);
         }
 
         public void Stop()
         {
-            /*
-			 * FALTA POR COMPLETAR
-			 * *
-			 */
+            if (_connection != null && _channel != null){
+                _connection.Close();
+                _connection.Dispose();
+                _channel.Close();
+                _channel.Dispose();
+            }
         }
 
         // Se instancia el driver de forma dinámica. 
@@ -64,29 +86,48 @@ namespace DroneController
         // Crear una cola para recibir comandos del backend control
         private void CreateMessageQueue(string DroneID)
         {
-            /*
-			 * FALTA POR COMPLETAR
-			 * *
-			 */
+            var factory = new ConnectionFactory();
+
+            _connection = factory.CreateConnection();
+            _channel = _connection.CreateModel();
+            _queueName = _channel.QueueDeclare();
+
+            var _routingKey = "ColaDron" + _droneID;
+
+            _channel.QueueBind(queue: _queueName,
+                exchange: EXCHANGE,
+                routingKey: _routingKey);
         }
 
         // Enviar el estado a través de la cola para recibir al backend control
         private void SendStatus(string message)
         {
-            /*
-			 * FALTA POR COMPLETAR
-			 * *
-			 */
+            if (_channel != null && _drone != null) { 
+                    
+                DroneStatus estado = _drone.GetStatus();
+
+                var body = Encoding.UTF8.GetBytes(message);
+                Console.WriteLine("Estado del Dron: " + message);
+
+                _channel.BasicPublish(exchange: EXCHANGE,
+                    routingKey: "Estado." + _droneID,
+                    mandatory: false,
+                    basicProperties: null,
+                    body: body);
+
+            }
         }
 
         // Gestión de los mensajes de comandos recibidos por el controlador
         // Si se añaden más mensajes se debería gestionar con una tabla
         private void HandleDroneCommand(string commandtext)
         {
-            // Decodificar el mensaje
-            DroneCommand command = JsonConvert.DeserializeObject<DroneCommand>(commandtext);
+
+           // Decodificar el mensaje
+           DroneCommand command = JsonConvert.DeserializeObject<DroneCommand>(commandtext);
 
             Log.Debug($"Executing drone command {command.Command}");
+
 
             if (command.Command == DroneCommand.START_FLIGHT_PLAN_CMD)
             {

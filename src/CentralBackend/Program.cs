@@ -68,6 +68,9 @@ public class Program
         // Mapeo de SignalR
         app.MapHub<UpdateMapHub>("/updatemaphub");
 
+        // Mapeo del SignalR
+        app.MapHub<UpdatePlanesVueloHub>("/updateplanesvuelohub");
+
         app.Run();
     }
 }
