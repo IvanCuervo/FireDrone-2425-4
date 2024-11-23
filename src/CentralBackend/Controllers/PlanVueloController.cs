@@ -135,8 +135,34 @@ namespace CentralBackend.Controllers
                     Secuencial = p.Secuencial,
                     PlanVueloId = planVuelo.PlanVueloId,
                 }).ToList();
-                // Anadir estación base como ultimo punto
-                var estBase = await _context.EstacionesBase.FindAsync(dron.EstacionBaseId);
+                if (ruta.Periodica == "Si")
+                {
+                    // Obtener el último secuencial de la lista de puntos
+                    int ultimoSecuencial = puntosPlanVuelo.Max(p => p.Secuencial);
+                    // Crear una lista para almacenar los puntos duplicados
+                    var puntosDuplicados = new List<PuntoPlanVuelo>();
+                    for (int ronda = 1; ronda < ruta.NumeroPeriodicidad; ronda++)
+                    {
+                        foreach (var punto in puntosPlanVuelo)
+                        {
+                            // Crear una copia del punto original con un nuevo secuencial
+                            var nuevoPunto = new PuntoPlanVuelo
+                            {
+                                X = punto.X,
+                                Y = punto.Y,
+                                Secuencial = ronda * ultimoSecuencial + punto.Secuencial,
+                                PlanVueloId = punto.PlanVueloId
+                            };
+
+                            // Agregar el nuevo punto a la lista de duplicados
+                            puntosDuplicados.Add(nuevoPunto);
+                        }
+                    }
+                    // Agregar los puntos duplicados a la lista original
+                    puntosPlanVuelo.AddRange(puntosDuplicados);
+                }
+                    // Anadir estación base como ultimo punto
+                    var estBase = await _context.EstacionesBase.FindAsync(dron.EstacionBaseId);
                 if (estBase != null)
                 {
                     puntosPlanVuelo.Add(new PuntoPlanVuelo
