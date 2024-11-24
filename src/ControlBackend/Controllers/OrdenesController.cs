@@ -1,4 +1,5 @@
-﻿using ControlBackend.Interfaces;
+﻿using Azure;
+using ControlBackend.Interfaces;
 using ControlBackend.Servicios;
 using DroneController;
 using Microsoft.AspNetCore.Mvc;
@@ -26,44 +27,15 @@ namespace ControlBackend.Controllers
         }
 
         [HttpPost("inicio")]
-        public ActionResult IniciarPlanVuelo()
+        public ActionResult IniciarPlanVuelo([FromBody] Conexion conexion)
         {
-            var waypoints = new List<Waypoint>
-{
-                new Waypoint
-                {
-                    Latitude = 37.7749,
-                    Longitude = -122.4194,
-                    Altitude = 100.0,
-                    Speed = 50.0
-                },
-                new Waypoint
-                {
-                    Latitude = 34.0522,
-                    Longitude = -118.2437,
-                    Altitude = 150.0,
-                    Speed = 60.0
-                },
-                new Waypoint
-                {
-                    Latitude = 40.7128,
-                    Longitude = -74.006,
-                    Altitude = 200.0,
-                    Speed = 70.0
-                }
-            };
-
-            string waypointsJson = JsonConvert.SerializeObject(waypoints);
-
-
-
             DroneCommand dron = new DroneCommand()
             {
                 Command = DroneCommand.START_FLIGHT_PLAN_CMD,
-                Arguments = waypointsJson
+                Arguments = conexion.puntos,
             };
 
-            _publicacionPlanVuelo.Publish("ColaDron" + 1, dron.Codificar());
+            _publicacionPlanVuelo.Publish("ColaDron" + conexion.dronId, dron.Codificar());
 
             return Ok();
         }

@@ -11,6 +11,9 @@ using CentralBackend.DTOs;
 using Humanizer;
 using CentralBackend.Services;
 using System.Net.Http.Headers;
+using Newtonsoft.Json;
+using Microsoft.AspNetCore.Routing;
+using DroneController;
 
 namespace CentralBackend.Controllers
 {
@@ -179,8 +182,21 @@ namespace CentralBackend.Controllers
                     savedChanges = await _context.SaveChangesAsync();
                     if (savedChanges > 0)
                     {
+                        // Puntos del plan de vuelo en orden
+                        var puntosPlan = await _context.PuntosPlanVuelo
+                            .Where(p => p.PlanVueloId == planVuelo.PlanVueloId) // Filtrar por el campo planVueloId
+                            .OrderBy(p => p.Secuencial)                  // Ordenar por el campo Secuencia
+                            .Select(p => new Waypoint { Longitude = p.X, Latitude = p.Y, Speed = 50, Altitude = 100 }) // CAMBIAR
+                            .ToListAsync();
+                        var puntosJson = JsonConvert.SerializeObject(puntosPlan);
                         // Llamada servicio
-                        _service.CrearPlanVuelo(planVuelo.PlanVueloId);
+                        Conexion conex = new Conexion()
+                        {
+                            dronId = dron.DronId,
+                            driver = "DroneSimulator",
+                            puntos = puntosJson,
+                        };
+                        _service.CrearPlanVuelo(conex);
                         return CreatedAtAction(nameof(GetPlanVuelo), new { id = planVuelo.PlanVueloId }, planVuelo);
                     }
                     else

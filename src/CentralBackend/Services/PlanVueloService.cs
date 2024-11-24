@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Models;
 
 namespace CentralBackend.Services
 {
@@ -15,17 +16,15 @@ namespace CentralBackend.Services
         }
 
 
-        public String CrearPlanVuelo([FromBody] int id)
+        public String CrearPlanVuelo([FromBody] Conexion conexion)
         {
-            EnviarPlanVuelo(_client);
+            EnviarPlanVuelo(_client, conexion);
             return "OK";
         }
-        public void EnviarPlanVuelo(HttpClient client)
+        public void EnviarPlanVuelo(HttpClient client, Conexion conexion)
         {
-
-            var response = client.PostAsync("api/ordenes/inicio", null).Result;
+            var response = client.PostAsJsonAsync("api/ordenes/inicio", conexion).Result;
             Console.WriteLine("Resultado: "+response);
-            
         }
 
     }
