@@ -41,7 +41,7 @@ namespace ControlBackend.Controllers
         }
 
         [HttpPost("parar")]
-        public ActionResult PararPlanVuelo()
+        public ActionResult PararPlanVuelo([FromBody] Conexion conexion)
         {
 
             DroneCommand dron = new DroneCommand()
@@ -50,7 +50,7 @@ namespace ControlBackend.Controllers
                 Arguments = ""
             };
 
-            _publicacionPlanVuelo.Publish("ColaDron" + 1, dron.Codificar());
+            _publicacionPlanVuelo.Publish("ColaDron" + conexion.dronId, dron.Codificar());
 
             return Ok();
         }

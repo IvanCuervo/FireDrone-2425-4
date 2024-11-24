@@ -216,9 +216,25 @@ namespace CentralBackend.Controllers
 
         }
 
+        [HttpPost("parar/{id}")]
+        public async Task<ActionResult<PlanVuelo>> PararPlanVuelo(int id)
+        {
 
-        // DELETE: api/PlanVuelo/5
-        [HttpDelete("{id}")]
+            Conexion conex = new Conexion()
+            {
+                dronId = id,
+                driver = "DroneSimulator",
+                puntos = "",
+            };
+
+            _service.PararVuelo(conex);
+
+            return Ok();
+        }
+
+
+            // DELETE: api/PlanVuelo/5
+            [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePlanVuelo(int id)
         {
             var planVuelo = await _context.PlanesVuelo.FindAsync(id);

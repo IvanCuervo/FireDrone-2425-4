@@ -21,10 +21,21 @@ namespace CentralBackend.Services
             EnviarPlanVuelo(_client, conexion);
             return "OK";
         }
+
+        public String PararVuelo([FromBody] Conexion conexion)
+        {
+            PararPlanVuelo(_client, conexion);
+            return "OK";
+        }
+
         public void EnviarPlanVuelo(HttpClient client, Conexion conexion)
         {
             var response = client.PostAsJsonAsync("api/ordenes/inicio", conexion).Result;
-            Console.WriteLine("Resultado: "+response);
+        }
+
+        public void PararPlanVuelo(HttpClient client, Conexion conexion)
+        {
+            var response = client.PostAsJsonAsync("api/ordenes/parar", conexion).Result;
         }
 
     }
