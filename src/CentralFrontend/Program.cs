@@ -13,7 +13,7 @@ public class Program
         app.UseStaticFiles();
 
         // Mapeo de una ruta simple opcional
-        app.MapGet("/", () => "Hello World!");
+        app.MapFallbackToFile("index.html");
 
         app.Run();
     }
