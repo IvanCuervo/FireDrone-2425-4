@@ -3,32 +3,21 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using System.Text.Json;
 
-class DroneInfo
+public class DroneInfo
 {
-    public string? Name { get; set; }
     public double Latitude { get; set; }
     public double Longitude { get; set; }
+    public double Altitude { get; set; }
+    public double Speed { get; set; }
+    public double Battery { get; set; }
+    public int State { get; set; }
 }
 
 [Route("api/[controller]")]
 [ApiController]
 public class UpdateMapController : ControllerBase
 {
-    private static DroneInfo[] _drones = new[]
-    {
-      new DroneInfo
-      {
-         Name = "Drone Gijón",
-         Latitude = 43.53573,
-         Longitude =  -5.66152
-      },
-      new DroneInfo
-      {
-         Name = "Drone Oviedo",
-         Latitude = 43.3619145,
-         Longitude = -5.8493887
-      }
-   };
+    private static List<DroneInfo> _drones = new List<DroneInfo>(); // Lista vacía para gestionar drones dinámicamente
 
     private readonly IHubContext<UpdateMapHub> _notificationHubContext;
 
@@ -37,15 +26,41 @@ public class UpdateMapController : ControllerBase
         _notificationHubContext = notificationHubContext;
     }
 
-    [HttpPost]
-    public async Task PostAsync()
+    [HttpPost("actualizar")]
+    public async Task<IActionResult> ActualizarDron([FromBody] DroneInfo updatedDrone)
     {
-        foreach (var dron in _drones)
+        // Validar el objeto recibido
+        if (updatedDrone == null)
         {
-            dron.Latitude += 0.001;
-            dron.Longitude += 0.001;
+            return BadRequest("El objeto DroneInfo es inválido");
         }
-        string jsonString = JsonSerializer.Serialize(_drones);
+
+        // Busca el dron en la lista
+        var existingDrone = _drones.FirstOrDefault(d => d.Altitude == 100.0);
+
+        if (existingDrone == null)
+        {
+            // Si no existe, lo agrega
+            _drones.Add(updatedDrone);
+        }
+        else
+        {
+            // Si existe, actualiza su posición
+            existingDrone.Latitude = updatedDrone.Latitude;
+            existingDrone.Longitude = updatedDrone.Longitude;
+        }
+
+        // Notificar a los clientes conectados
+        string jsonString = JsonSerializer.Serialize(new[] { updatedDrone });
         await _notificationHubContext.Clients.All.SendAsync("UpdateMapNotification", jsonString);
+
+        return Ok(updatedDrone); // Retorna la información actualizada del dron
+    }
+
+
+    [HttpGet("drones")]
+    public IActionResult ObtenerDrones()
+    {
+        return Ok(_drones);
     }
 }

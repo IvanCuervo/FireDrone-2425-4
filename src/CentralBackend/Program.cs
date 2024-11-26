@@ -8,6 +8,7 @@ public class Program
 {
     public static void Main(string[] args)
     {
+
         var builder = WebApplication.CreateBuilder(args);
 
         // En la configuración de los servicios:
@@ -27,6 +28,11 @@ public class Program
         builder.Services.AddDbContext<AppDbContext>(options =>
         options.UseSqlite("Data Source=../../FireDrone-2425-4.db"));
 
+        using (var scope = builder.Services.BuildServiceProvider().CreateScope())
+        {
+            var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            dbContext.Database.EnsureCreated(); // Crea la base de datos si no existe
+        }
 
         // Opcional: para ver errores de base de datos en desarrollo
         builder.Services.AddDatabaseDeveloperPageExceptionFilter();

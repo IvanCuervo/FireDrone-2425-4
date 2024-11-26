@@ -28,4 +28,6 @@ tests/*/obj/
 
 *.csproj.user
 
+*.db
+
 
