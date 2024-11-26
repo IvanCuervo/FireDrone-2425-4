@@ -2,6 +2,7 @@
 using CentralBackend.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Models;
 using System.Net.Http.Headers;
 
 namespace CentralBackend.Controllers
@@ -35,9 +36,9 @@ namespace CentralBackend.Controllers
         }
 
         [HttpPost("recibirestado")]
-        public ActionResult RecibirEstadoDron([FromBody] string message)
+        public ActionResult RecibirEstadoDron([FromBody] Dron dronStatus)
         {
-            Console.WriteLine($"EstadoDron: {message}");
+            Console.WriteLine($"EstadoDron: {dronStatus}");
 
             return Ok();
         }
