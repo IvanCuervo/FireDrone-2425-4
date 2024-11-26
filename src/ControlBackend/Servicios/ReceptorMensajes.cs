@@ -16,15 +16,18 @@ namespace ControlBackend.Servicios
         {
             var message = Encoding.UTF8.GetString(body);
 
-            Console.WriteLine($"[x] Received '{topic}':'{message}'");
+            Dron dronStatus = JsonConvert.DeserializeObject<Dron>(message);
+
+            var dronID = topic.Split('.')[1];
+
+            Console.WriteLine($"[x] Received DronID:'{dronID}'Message :'{message}'");
+
+            dronStatus.DronId = Int32.Parse(dronID);
 
             HttpClient client = new HttpClient();
             client.BaseAddress = new Uri("http://localhost:5285"); // Asegura que el host y puerto sean correctos.
 
-
-            HttpResponseMessage response = client.PostAsJsonAsync("api/EstadoDron/recibirestado", message).Result;
-
-
+            HttpResponseMessage response = client.PostAsJsonAsync("api/EstadoDron/recibirestado", dronStatus).Result;
         }
     }
 }
