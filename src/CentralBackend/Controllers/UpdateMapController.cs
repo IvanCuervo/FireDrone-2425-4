@@ -13,6 +13,8 @@ public class DroneInfo
     public double Altitude { get; set; }
     public double Speed { get; set; }
     public double Battery { get; set; }
+    public string Name { get; set; }
+
     //public int State { get; set; }
 }
 
@@ -41,8 +43,6 @@ public class UpdateMapController : ControllerBase
         // Buscar el dron en la lista usando el DronId
         var existingDrone = _drones.FirstOrDefault(d => d.DronId == updatedDrone.DronId);
 
-        Console.WriteLine(existingDrone);
-
         if (existingDrone == null)
         {
             // Si no existe, lo agrega a la lista
@@ -57,12 +57,13 @@ public class UpdateMapController : ControllerBase
             existingDrone.Altitude = updatedDrone.Altitude;
             existingDrone.Speed = updatedDrone.Speed;
             existingDrone.Battery = updatedDrone.Battery;
+            existingDrone.Name = updatedDrone.Name;
 
             Console.WriteLine($"Dron actualizado con ID: {updatedDrone.DronId}");
         }
 
         // Notificar a los clientes conectados sobre el cambio
-        string jsonString = JsonSerializer.Serialize(new[] { updatedDrone });
+        string jsonString = JsonSerializer.Serialize(_drones);
         await _notificationHubContext.Clients.All.SendAsync("UpdateMapNotification", jsonString);
 
         // Retorna la información actualizada o nueva del dron

@@ -46,19 +46,6 @@ namespace CentralBackend.Controllers
 
             Console.WriteLine($"Recibida medición con ID: {medicion.MedicionPlanVueloId}");
 
-            //// Obtener el PlanVuelo asociado al MedicionPlanVuelo
-            //var planVuelo = _context.PlanesVuelo.FirstOrDefault(p => p.PlanVueloId == medicion.PlanVuelo.PlanVueloId);
-
-            //if (planVuelo == null)
-            //{
-            //    return NotFound($"No se encontró el PlanVuelo con ID {medicion.PlanVueloId}");
-            //}
-
-            //// Obtener el DronId desde el PlanVuelo
-            //int dronId = planVuelo.DronId;
-
-            //Console.WriteLine($"Dron asociado al PlanVuelo (ID: {planVuelo.PlanVueloId}): DronId = {dronId}");
-
             // Crear un objeto DroneInfo con los datos necesarios
             var dronInfo = new DroneInfo
             {
@@ -67,7 +54,8 @@ namespace CentralBackend.Controllers
                 Longitude = medicion.Y,     // Interpretamos Y como la longitud
                 Altitude = medicion.Altura, // Altura desde MedicionPlanVuelo
                 Speed = medicion.Velocidad, // Velocidad desde MedicionPlanVuelo
-                Battery = 75.0             // Valor ficticio o cálculo de batería
+                Battery = 75.0,             // Valor ficticio o cálculo de batería
+                Name = medicion.PlanVuelo.DronId.ToString()
             };
 
             // Llamar a ActualizarPosicionDron para enviar la información actualizada
