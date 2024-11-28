@@ -1,6 +1,7 @@
 ﻿using CentralBackend.Hubs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using System.IO;
 using System.Text.Json;
 
 namespace CentralBackend.Services
@@ -35,16 +36,25 @@ namespace CentralBackend.Services
         {
             try
             {
-                // Serializar la información del dron y enviarla al controlador UpdateMapController
-                var content = new StringContent(JsonSerializer.Serialize(dronEstado), System.Text.Encoding.UTF8, "application/json");
-                var response = await _client.PostAsync("api/updatemap/actualizar", content);
-
-                if (!response.IsSuccessStatusCode)
+                HttpClient client = new HttpClient
                 {
-                    throw new Exception($"Error al actualizar la posición del dron: {response.StatusCode}");
-                }
+                    BaseAddress = new Uri("http://localhost:5285")
+                };
 
-                Console.WriteLine($"Dron actualizado correctamente");
+                // Enviar la solicitud POST al endpoint
+                HttpResponseMessage response = await client.PostAsJsonAsync("api/updatemap/actualizar", dronEstado);
+
+                // Verificar la respuesta del servidor
+                if (response.IsSuccessStatusCode)
+                {
+                    Console.WriteLine("Dron actualizado correctamente");
+                }
+                else
+                {
+                    Console.WriteLine($"Error al actualizar la posición del dron: {response.StatusCode}");
+                    string errorContent = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine($"Detalles del error: {errorContent}");
+                }
             }
             catch (Exception ex)
             {
@@ -52,5 +62,6 @@ namespace CentralBackend.Services
                 throw;
             }
         }
+
     }
 }

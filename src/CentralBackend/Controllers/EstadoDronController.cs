@@ -36,11 +36,47 @@ namespace CentralBackend.Controllers
         }
 
         [HttpPost("recibirestado")]
-        public ActionResult RecibirEstadoDron([FromBody] Dron dronStatus)
+        public async Task<IActionResult> RecibirEstadoDron([FromBody] MedicionPlanVuelo medicion)
         {
-            Console.WriteLine($"EstadoDron: {dronStatus}");
+            // Validar que la medición no sea nula
+            if (medicion == null)
+            {
+                return BadRequest("La medición enviada es nula.");
+            }
 
-            return Ok();
+            Console.WriteLine($"Recibida medición con ID: {medicion.MedicionPlanVueloId}");
+
+            //// Obtener el PlanVuelo asociado al MedicionPlanVuelo
+            //var planVuelo = _context.PlanesVuelo.FirstOrDefault(p => p.PlanVueloId == medicion.PlanVuelo.PlanVueloId);
+
+            //if (planVuelo == null)
+            //{
+            //    return NotFound($"No se encontró el PlanVuelo con ID {medicion.PlanVueloId}");
+            //}
+
+            //// Obtener el DronId desde el PlanVuelo
+            //int dronId = planVuelo.DronId;
+
+            //Console.WriteLine($"Dron asociado al PlanVuelo (ID: {planVuelo.PlanVueloId}): DronId = {dronId}");
+
+            // Crear un objeto DroneInfo con los datos necesarios
+            var dronInfo = new DroneInfo
+            {
+                DronId = medicion.PlanVuelo.DronId,             // Incluir el DronId en el objeto DroneInfo
+                Latitude = medicion.X,      // Interpretamos X como la latitud
+                Longitude = medicion.Y,     // Interpretamos Y como la longitud
+                Altitude = medicion.Altura, // Altura desde MedicionPlanVuelo
+                Speed = medicion.Velocidad, // Velocidad desde MedicionPlanVuelo
+                Battery = 75.0             // Valor ficticio o cálculo de batería
+            };
+
+            // Llamar a ActualizarPosicionDron para enviar la información actualizada
+            await _service.ActualizarPosicionDron(dronInfo);
+
+            //_context.MedicionesPlanVuelo.Add(medicion);
+            //_context.SaveChanges();
+
+            return Ok("Medición procesada correctamente.");
         }
 
     }
