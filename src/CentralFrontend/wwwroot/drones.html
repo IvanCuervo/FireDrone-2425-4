@@ -211,12 +211,13 @@
                             `;
 
                         const botonCambiar = detalles.querySelector('.boton-cambiar');
-
+                        /*
                         botonCambiar.addEventListener('click', () => {
                             const textManual = document.querySelector(`#textModo_${plan.planVueloId}`);
                             const modoActual = textManual.textContent.includes('Automático') ? 'Automático' : 'Detenido';
                             cambiarModo(plan.planVueloId, modoActual);
-                        });
+                        });*/
+                        botonCambiar.addEventListener('click', () => cambiarModo(plan));
                         botonModo.addEventListener('click', () => {
                             detalles.style.display = detalles.style.display === 'none' ? 'block' : 'none';
 
@@ -333,16 +334,14 @@
     </script>
 
     <script>
-        async function cambiarModo(planVueloId, modoActual) {
+        async function cambiarModo(planVuelo) {
             const apiUrlBasePlanVuelo = `http://localhost:5285/api/PlanVuelo`;
-            const nuevoModo = modoActual === 'Automático' ? 'Detenido' : 'Automático';
-
-            const apiUrlControlManual = `${apiUrlBasePlanVuelo}/${planVueloId}/controlManual`;
-            const apiUrlPararPlan = `${apiUrlBasePlanVuelo}/parar/${planVueloId}`;
-
+            const apiUrlControlManual = `${apiUrlBasePlanVuelo}/${planVuelo.planVueloId}/controlManual`;
+            const apiUrlPararPlan = `${apiUrlBasePlanVuelo}/parar/${planVuelo.planVueloId}`;
+            
             try {
-                if (nuevoModo === 'Detenido') {
-                    // Llamar al endpoint para parar el plan de vuelo
+                planVuelo.controlManual = planVuelo.controlManual == 0 ? 1 : 0
+                if (planVuelo.controlManual == 1) {
                     const responseParar = await fetch(apiUrlPararPlan, {
                         method: 'POST',
                         headers: {
@@ -354,46 +353,22 @@
                         throw new Error('Error al parar el plan de vuelo.');
                     }
                 }
-
-                // Llamar al endpoint para cambiar el modo
-                const body = nuevoModo === 'Detenido' ? 1 : 0; // 1 para detenido, 0 para automático
-                const responseControlManual = await fetch(apiUrlControlManual, {
+                
+                const response = await fetch(apiUrlControlManual, {
                     method: 'PUT',
                     headers: {
-                        'Content-Type': 'application/json',
+                        'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify(body),
+                    body: JSON.stringify(planVuelo.controlManual)
                 });
 
-                if (!responseControlManual.ok) {
+                if (!response.ok) {
                     throw new Error('Error al cambiar el modo de vuelo.');
                 }
-
-                // Actualizar UI según el nuevo modo
-                const textfield1 = document.querySelector(`#textfield1_${planVueloId}`);
-                const textfield2 = document.querySelector(`#textfield2_${planVueloId}`);
-                const buttonAddPoint = document.querySelector(`#button_${planVueloId}`);
-                const textManual = document.querySelector(`#textModo_${planVueloId}`);
-
-                if (textfield1 && textfield2 && buttonAddPoint && textManual) {
-                    if (nuevoModo === 'Automático') {
-                        // Modo Automático: Deshabilitar campos y botones
-                        textfield1.disabled = true;
-                        textfield2.disabled = true;
-                        buttonAddPoint.disabled = true;
-                        textManual.textContent = 'Modo de vuelo: Automático';
-                    } else if (nuevoModo === 'Detenido') {
-                        // Modo Detenido: Habilitar campos y botones
-                        textfield1.disabled = false;
-                        textfield2.disabled = false;
-                        buttonAddPoint.disabled = false;
-                        textManual.textContent = 'Modo de vuelo: Detenido';
-                    }
-                }
-
+                
             } catch (error) {
                 console.error(error);
-                alert(`Error: ${error.message}`);
+                alert('Error al cambiar el tipo de vuelo.');
             }
         }
 
