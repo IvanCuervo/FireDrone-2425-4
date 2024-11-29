@@ -229,6 +229,11 @@
                 FechaFin: "",
                 ControlManual: 0 //Falso
             };
+
+            const apiUrlBaseEstadoDron = `http://localhost:5285/api/EstadoDron`;
+            const dronId = document.getElementById('drones-select').value;
+            const apiUrlEstadoDron = `${apiUrlBaseEstadoDron}/estado/${dronId}`;
+
             try {
                 const response = await fetch(apiUrlPlanVuelo, {
                     method: 'POST',
@@ -242,7 +247,17 @@
                     throw new Error('Error al crear el plan de vuelo.');
                 }
 
-                const data = await response.json();
+                const responseEstado = await fetch(apiUrlEstadoDron, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+                if (!responseEstado.ok) {
+                    throw new Error('Error al solicitar estado del dron.');
+                }
+
                 alert('Plan de vuelo ejecutado con éxito.');
             } catch (error) {
                 console.error(error);
