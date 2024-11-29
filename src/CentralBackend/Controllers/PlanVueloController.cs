@@ -233,8 +233,8 @@ namespace CentralBackend.Controllers
         }
 
 
-            // DELETE: api/PlanVuelo/5
-            [HttpDelete("{id}")]
+        // DELETE: api/PlanVuelo/5
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePlanVuelo(int id)
         {
             var planVuelo = await _context.PlanesVuelo.FindAsync(id);
