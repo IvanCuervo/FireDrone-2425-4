@@ -1,12 +1,13 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inicio</title>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Incidencias</title>
 
-    <link rel="stylesheet" href="css/estilos.css">
+    <link rel="stylesheet" href="css/estilos.css" />
+
 </head>
 <body id="body">
 
@@ -14,8 +15,8 @@
         <div class="icon__menu">
             <i class="fas fa-bars" id="btn_open">
                 <svg height="32px" id="Layer_1" style="enable-background:new 0 0 32 32;" version="1.1" viewBox="0 0 32 32" width="32px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                <path d="M4,10h24c1.104,0,2-0.896,2-2s-0.896-2-2-2H4C2.896,6,2,6.896,2,8S2.896,10,4,10z M28,14H4c-1.104,0-2,0.896-2,2  s0.896,2,2,2h24c1.104,0,2-0.896,2-2S29.104,14,28,14z M28,22H4c-1.104,0-2,0.896-2,2s0.896,2,2,2h24c1.104,0,2-0.896,2-2  S29.104,22,28,22z" />
-            </svg>
+                    <path d="M4,10h24c1.104,0,2-0.896,2-2s-0.896-2-2-2H4C2.896,6,2,6.896,2,8S2.896,10,4,10z M28,14H4c-1.104,0-2,0.896-2,2  s0.896,2,2,2h24c1.104,0,2-0.896,2-2S29.104,14,28,14z M28,22H4c-1.104,0-2,0.896-2,2s0.896,2,2,2h24c1.104,0,2-0.896,2-2  S29.104,22,28,22z" />
+                </svg>
             </i>
         </div>
     </header>
@@ -36,7 +37,7 @@
 
         <div class="options__menu">
 
-            <a href="#" class="selected">
+            <a href="index.html">
                 <div class="option">
                     <i title="Inicio">
                         <?xml version="1.0" ?>
@@ -85,7 +86,7 @@
                 </div>
             </a>
 
-            <a href="incidencias.html">
+            <a href="#" class="selected">
                 <div class="option">
                     <i title="Incidencias">
                         <?xml version="1.0" ?>
@@ -103,7 +104,10 @@
 
     <main>
         <div>
-            <h1 class="titulo">Inicio</h1>
+            <h1 class="titulo">Incidencias</h1>
+        </div>
+        <div class="plan-vuelo-container" id="incidenciasContainer">
+
         </div>
     </main>
 
@@ -142,7 +146,57 @@
         });
     </script>
 
-    <script>console.log(new Date())</script>
+    <script>
+        const apiUrlIncidencias = 'http://localhost:5285/api/Incidencias';
+        const apiUrlBaseMediciones = 'http://localhost:5285/api/MedicionPlanVuelo';
+
+        async function obtenerIncidencias() {
+            try {
+                const response = await fetch(apiUrlIncidencias);
+                if (!response.ok) {
+                    throw new Error('Error al obtener las incidencias');
+                }
+                const incidencias = await response.json();
+
+                const container = document.getElementById('incidenciasContainer');
+                
+                for (const incidencia of incidencias.$values) {
+                    // Obtener plan de vuelo id
+                    const apiUrlMediciones = `${apiUrlBaseMediciones}/${incidencia.medicionPlanVueloId}`;
+                    const responseMed = await fetch(apiUrlMediciones);
+                    if (!responseMed.ok) {
+                        throw new Error('Error al obtener la medición.');
+                    }
+                    const medicion = await responseMed.json();
+
+                    const incidenciaItem = document.createElement('div');
+                    incidenciaItem.setAttribute('style', `
+                        display: flex;
+                        justify-content: space-between;
+                        border-radius: 5px;
+                        flex-direction: column;
+                    `);
+                    incidenciaItem.classList.add('plan-vuelo-item');
+                    incidenciaItem.innerHTML = `
+                            <div style="display: flex; justify-content: space-between;">
+                            <strong style="width: 150px;">Incidencia: ${incidencia.incidenciaId}</strong>
+                            <p style="width: 150px;">Plan de vuelo: ${medicion.planVueloId}</p>
+                            <p style="width: 150px;">Medición: ${incidencia.medicionPlanVueloId}</p>
+                            <p style="width: 250px;">Posición: ${incidencia.y}, ${incidencia.x}</p>
+                            </div>
+                            <p>Información: ${incidencia.informacion}</p>
+                    `;
+
+                    container.appendChild(incidenciaItem);
+                }
+            } catch (error) {
+                console.error(error);
+                alert('Error al cargar las incidencias.');
+            }
+        }
+
+        obtenerIncidencias();
+    </script>
 
 </body>
 </html>
