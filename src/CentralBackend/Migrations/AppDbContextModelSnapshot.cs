@@ -57,6 +57,9 @@ namespace CentralBackend.Migrations
                     b.Property<double>("AutonomiaVuelo")
                         .HasColumnType("REAL");
 
+                    b.Property<double>("Bateria")
+                        .HasColumnType("REAL");
+
                     b.Property<string>("Camara")
                         .HasColumnType("TEXT");
 
@@ -250,6 +253,12 @@ namespace CentralBackend.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<double>("Altitud")
+                        .HasColumnType("REAL");
+
+                    b.Property<double>("Latitud")
+                        .HasColumnType("REAL");
+
                     b.Property<int>("PlanVueloId")
                         .HasColumnType("INTEGER");
 
@@ -266,7 +275,7 @@ namespace CentralBackend.Migrations
 
                     b.HasIndex("PlanVueloId");
 
-                    b.ToTable("PuntoPlanVuelo");
+                    b.ToTable("PuntosPlanVuelo");
                 });
 
             modelBuilder.Entity("Models.PuntoRuta", b =>
@@ -274,6 +283,12 @@ namespace CentralBackend.Migrations
                     b.Property<int>("PuntoRutaId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
+
+                    b.Property<double>("Altitud")
+                        .HasColumnType("REAL");
+
+                    b.Property<double>("Latitud")
+                        .HasColumnType("REAL");
 
                     b.Property<int>("RutaId")
                         .HasColumnType("INTEGER");

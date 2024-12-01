@@ -85,7 +85,6 @@ public class Program
 
     static void SeedData(AppDbContext context)
     {
-        // Tabla Area
         if (!context.Areas.Any())
         {
             context.Areas.AddRange(
@@ -97,7 +96,6 @@ public class Program
             );
         }
 
-        // Tabla EstacionBase
         if (!context.EstacionesBase.Any())
         {
             context.EstacionesBase.AddRange(
@@ -109,7 +107,6 @@ public class Program
             );
         }
 
-        // Tabla EstacionControl
         if (!context.EstacionesControl.Any())
         {
             context.EstacionesControl.AddRange(
@@ -121,19 +118,17 @@ public class Program
             );
         }
 
-        // Tabla Dron
         if (!context.Drones.Any())
         {
             context.Drones.AddRange(
-                new Dron { DronId = 1, Modelo = "DJI Mavic Pro", Camara = "4K", Velocidad = 50.5, AutonomiaVuelo = 30.0, TiempoRecarga = 1.5, Simulador = "Simulador A", Estado = "Operativo", Sensores = "Infrarrojo", EstacionBaseId = 1, EstacionControlId = 1 },
-                new Dron { DronId = 2, Modelo = "Parrot Anafi", Camara = "HD", Velocidad = 45.0, AutonomiaVuelo = 25.0, TiempoRecarga = 1.0, Simulador = "Simulador B", Estado = "En mantenimiento", Sensores = "Ultrasonido", EstacionBaseId = 2, EstacionControlId = 2 },
-                new Dron { DronId = 3, Modelo = "Autel Evo", Camara = "4K", Velocidad = 55.5, AutonomiaVuelo = 35.0, TiempoRecarga = 2.0, Simulador = "Simulador C", Estado = "Operativo", Sensores = "Infrarrojo y ultrasonido", EstacionBaseId = 3, EstacionControlId = 3 },
-                new Dron { DronId = 4, Modelo = "DJI Phantom 4", Camara = "HD", Velocidad = 60.0, AutonomiaVuelo = 40.0, TiempoRecarga = 1.8, Simulador = "Simulador A", Estado = "Operativo", Sensores = "Termografía", EstacionBaseId = 4, EstacionControlId = 4 },
-                new Dron { DronId = 5, Modelo = "Yuneec Typhoon", Camara = "4K", Velocidad = 52.0, AutonomiaVuelo = 28.0, TiempoRecarga = 1.2, Simulador = "Simulador B", Estado = "Operativo", Sensores = "Infrarrojo y termografía", EstacionBaseId = 5, EstacionControlId = 5 }
+                new Dron { DronId = 1, Modelo = "DJI Mavic Pro", Camara = "4K", Velocidad = 50.5, AutonomiaVuelo = 30.0, TiempoRecarga = 1.5, Simulador = "Simulador A", Estado = "Operativo", Sensores = "Infrarrojo", Bateria = 89.4, EstacionBaseId = 1, EstacionControlId = 1 },
+                new Dron { DronId = 2, Modelo = "Parrot Anafi", Camara = "HD", Velocidad = 45.0, AutonomiaVuelo = 25.0, TiempoRecarga = 1.0, Simulador = "Simulador B", Estado = "En mantenimiento", Sensores = "Ultrasonido", Bateria = 79.4, EstacionBaseId = 2, EstacionControlId = 2 },
+                new Dron { DronId = 3, Modelo = "Autel Evo", Camara = "4K", Velocidad = 55.5, AutonomiaVuelo = 35.0, TiempoRecarga = 2.0, Simulador = "Simulador C", Estado = "Operativo", Sensores = "Infrarrojo y ultrasonido", Bateria = 39.4, EstacionBaseId = 3, EstacionControlId = 3 },
+                new Dron { DronId = 4, Modelo = "DJI Phantom 4", Camara = "HD", Velocidad = 60.0, AutonomiaVuelo = 40.0, TiempoRecarga = 1.8, Simulador = "Simulador A", Estado = "Operativo", Sensores = "Termografía", Bateria = 58.4, EstacionBaseId = 4, EstacionControlId = 4 },
+                new Dron { DronId = 5, Modelo = "Yuneec Typhoon", Camara = "4K", Velocidad = 52.0, AutonomiaVuelo = 28.0, TiempoRecarga = 1.2, Simulador = "Simulador B", Estado = "Operativo", Sensores = "Infrarrojo y termografía", Bateria = 65.4, EstacionBaseId = 5, EstacionControlId = 5 }
             );
         }
 
-        // Tabla Ruta
         if (!context.Rutas.Any())
         {
             context.Rutas.AddRange(
@@ -145,7 +140,6 @@ public class Program
             );
         }
 
-        // Tabla PlanVuelo
         if (!context.PlanesVuelo.Any())
         {
             context.PlanesVuelo.AddRange(
@@ -157,31 +151,28 @@ public class Program
             );
         }
 
-        // Tabla PuntoPlanVuelo
         if (!context.PuntosPlanVuelo.Any())
         {
             context.PuntosPlanVuelo.AddRange(
-                new PuntoPlanVuelo { PuntoPlanVueloId = 1, X = 43.53, Y = -5.6, Secuencial = 1, PlanVueloId = 1 },
-                new PuntoPlanVuelo { PuntoPlanVueloId = 2, X = 43.54, Y = -5.65, Secuencial = 2, PlanVueloId = 1 },
-                new PuntoPlanVuelo { PuntoPlanVueloId = 3, X = 43.52, Y = -5.67, Secuencial = 1, PlanVueloId = 2 },
-                new PuntoPlanVuelo { PuntoPlanVueloId = 4, X = 43.53, Y = -5.63, Secuencial = 2, PlanVueloId = 2 },
-                new PuntoPlanVuelo { PuntoPlanVueloId = 5, X = 43.53, Y = -5.67, Secuencial = 3, PlanVueloId = 3 }
+                new PuntoPlanVuelo { PuntoPlanVueloId = 1, X = 39.47, Y = -6.38, Secuencial = 1, Latitud = 39.4701, Altitud = 500.0, PlanVueloId = 1 },
+                new PuntoPlanVuelo { PuntoPlanVueloId = 2, X = 39.47, Y = -6.39, Secuencial = 2, Latitud = 39.4702, Altitud = 510.0, PlanVueloId = 1 },
+                new PuntoPlanVuelo { PuntoPlanVueloId = 3, X = 39.48, Y = -6.38, Secuencial = 1, Latitud = 39.4801, Altitud = 520.0, PlanVueloId = 2 },
+                new PuntoPlanVuelo { PuntoPlanVueloId = 4, X = 39.48, Y = -6.39, Secuencial = 2, Latitud = 39.4802, Altitud = 530.0, PlanVueloId = 2 },
+                new PuntoPlanVuelo { PuntoPlanVueloId = 5, X = 39.49, Y = -6.38, Secuencial = 3, Latitud = 39.4901, Altitud = 540.0, PlanVueloId = 3 }
             );
         }
 
-        // Tabla PuntoRuta
         if (!context.PuntosRuta.Any())
         {
             context.PuntosRuta.AddRange(
-                new PuntoRuta { PuntoRutaId = 1, X = 43.53, Y = -5.6, Secuencial = 1, RutaId = 1 },
-                new PuntoRuta { PuntoRutaId = 2, X = 43.54, Y = -5.65, Secuencial = 2, RutaId = 1 },
-                new PuntoRuta { PuntoRutaId = 3, X = 43.52, Y = -5.67, Secuencial = 1, RutaId = 2 },
-                new PuntoRuta { PuntoRutaId = 4, X = 43.53, Y = -5.63, Secuencial = 2, RutaId = 2 },
-                new PuntoRuta { PuntoRutaId = 5, X = 43.53, Y = -5.67, Secuencial = 3, RutaId = 2 }
+                new PuntoRuta { PuntoRutaId = 1, X = 39.48, Y = -6.38, Secuencial = 1, Latitud = 39.4801, Altitud = 450.0, RutaId = 1 },
+                new PuntoRuta { PuntoRutaId = 2, X = 39.49, Y = -6.39, Secuencial = 2, Latitud = 39.4901, Altitud = 460.0, RutaId = 1 },
+                new PuntoRuta { PuntoRutaId = 3, X = 40.32, Y = -3.70, Secuencial = 1, Latitud = 40.3201, Altitud = 470.0, RutaId = 2 },
+                new PuntoRuta { PuntoRutaId = 4, X = 40.33, Y = -3.71, Secuencial = 2, Latitud = 40.3301, Altitud = 480.0, RutaId = 2 },
+                new PuntoRuta { PuntoRutaId = 5, X = 38.90, Y = -4.25, Secuencial = 1, Latitud = 38.9001, Altitud = 490.0, RutaId = 3 }
             );
         }
 
-        // Guarda los cambios en la base de datos
         context.SaveChanges();
     }
 

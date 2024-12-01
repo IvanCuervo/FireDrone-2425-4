@@ -25,7 +25,8 @@
         public string? Simulador { get; set; }
         public string? Estado { get; set; }
         public string? Sensores { get; set; }
-    
+        public double Bateria { get; set; }
+
         public int EstacionBaseId { get; set; }
         public EstacionBase? EstacionBase { get; set; }
     
@@ -110,29 +111,36 @@
     
         public ICollection<PuntoPlanVuelo> PuntosPlanVuelo { get; set; } = new List<PuntoPlanVuelo>();
     }
-    
+
     public class PuntoPlanVuelo
     {
         public int PuntoPlanVueloId { get; set; }
         public double X { get; set; }
         public double Y { get; set; }
         public int Secuencial { get; set; }
-    
+
+        public double Latitud { get; set; }
+        public double Altitud { get; set; }
+
         public int PlanVueloId { get; set; }
         public PlanVuelo? PlanVuelo { get; set; }
     }
-    
+
     public class PuntoRuta
     {
         public int PuntoRutaId { get; set; }
         public double X { get; set; }
         public double Y { get; set; }
         public int Secuencial { get; set; }
-    
+
+        public double Latitud { get; set; }  // Nueva columna
+        public double Altitud { get; set; }  // Nueva columna
+
         public int RutaId { get; set; }
         public Ruta? Ruta { get; set; }
     }
-    
+
+
     public class Ruta
     {
         public int RutaId { get; set; }
