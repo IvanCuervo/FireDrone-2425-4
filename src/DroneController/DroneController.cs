@@ -20,6 +20,9 @@ namespace DroneController
         IConnection _connection;
         IModel _channel;
         string _queueName;
+        bool _sendStatusPeriodically = false;
+        const int SEND_STATUS_INTERVAL = 3000;
+
 
 
         public DroneController(string droneID, string droneDriver)
@@ -118,6 +121,25 @@ namespace DroneController
             }
         }
 
+        //Envia el estado continuamente
+        private void SendStatusPerodically()
+        {
+
+            if (_drone != null)
+            {
+                while (_sendStatusPeriodically)
+                {                    
+                    DroneStatus estado = _drone.GetStatus();
+                    var estadoJSON = JsonConvert.SerializeObject(estado);
+
+                    //Envio del estado a traves de la API
+                    SendStatus(estadoJSON);
+                    //intervalo de tiempo entre envios de estados
+                    System.Threading.Thread.Sleep(SEND_STATUS_INTERVAL);
+                }
+            }
+        }
+
         // Gestión de los mensajes de comandos recibidos por el controlador
         // Si se añaden más mensajes se debería gestionar con una tabla
         private void HandleDroneCommand(string commandtext)
@@ -127,17 +149,30 @@ namespace DroneController
            DroneCommand command = JsonConvert.DeserializeObject<DroneCommand>(commandtext);
 
             Log.Debug($"Executing drone command {command.Command}");
-
+            Thread hiloEnvioEstado;
 
             if (command.Command == DroneCommand.START_FLIGHT_PLAN_CMD)
             {
                 // Decodificar los argumentos
                 Waypoint[] waypoints = JsonConvert.DeserializeObject<Waypoint[]>(command.Arguments);
                 _drone.StartFlightPlan(waypoints);
+
+                _sendStatusPeriodically = true;
+
+                hiloEnvioEstado = new Thread(() =>
+                {
+                    Thread.CurrentThread.IsBackground = true;
+
+                    SendStatusPerodically();
+                });
+
+                hiloEnvioEstado.Start();
+
             }
             else if (command.Command == DroneCommand.STOP_FLIGHT_PLAN_CMD)
             {
                 _drone.StopFlightPlan();
+                _sendStatusPeriodically = false;
             }
             else if (command.Command == DroneCommand.STATUS_CMD)
             {
