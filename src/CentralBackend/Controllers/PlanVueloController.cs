@@ -186,7 +186,7 @@ namespace CentralBackend.Controllers
                         var puntosPlan = await _context.PuntosPlanVuelo
                             .Where(p => p.PlanVueloId == planVuelo.PlanVueloId) // Filtrar por el campo planVueloId
                             .OrderBy(p => p.Secuencial)                  // Ordenar por el campo Secuencia
-                            .Select(p => new Waypoint { Longitude = p.X, Latitude = p.Y, Speed = 50, Altitude = 100 }) // CAMBIAR
+                            .Select(p => new Waypoint { Longitude = p.X, Latitude = p.Y, Speed = p.Latitud, Altitude = p.Altitud }) // CAMBIAR
                             .ToListAsync();
                         var puntosJson = JsonConvert.SerializeObject(puntosPlan);
                         // Llamada servicio
