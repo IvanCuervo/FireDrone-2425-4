@@ -195,6 +195,13 @@
     padding: 0px;
 }
 
+.camposNuevoPunto {
+    display: flex; 
+    align-items: center; 
+    margin-top: 10px; 
+    justify-content: space-between;
+}
+
 /*------*/
 
 
@@ -354,3 +361,15 @@ a.selected {
     }
 }
 
+
+
+@media screen and (max-width: 1450px) {
+    .camposNuevoPunto {
+        display: flex;
+        align-items: flex-start;
+        margin-top: 10px;
+        justify-content: space-between;
+        flex-direction: column;
+        height: 200px;
+    }
+}

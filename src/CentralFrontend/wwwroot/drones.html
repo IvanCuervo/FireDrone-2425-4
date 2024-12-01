@@ -214,26 +214,34 @@
                         const habilitado = plan.controlManual !== 0;
 
                         detalles.innerHTML = `
-                                <div class="contenido-detalle" style="display: flex; justify-content: space-between;">
-                                    <button class="boton-cambiar"><strong style="color: white;">CAMBIAR MODO</strong></button>
-                                    <div style="display: flex; align-items: center;">
-                                        <p>Lat:</p>
-                                        <input type="text" class="textfield" id="textfield1_${plan.planVueloId}" ${habilitado ? '' : 'disabled'} />
-                                        <p>Long:</p>
-                                        <input type="text" class="textfield" id="textfield2_${plan.planVueloId}" ${habilitado ? '' : 'disabled'} />
+                                <div class="contenido-detalle" style="display: flex; flex-direction: column;">
+                                    <div style="display: flex; justify-content: space-between;">
+                                        <button class="boton-cambiar"><strong style="color: white;">CAMBIAR MODO</strong></button>
+                                        <button class="boton-casa" data-id="${plan.dronId}"><strong style="color: white;">VOLVER A BASE</strong></button>
+                                    </div>
+                                    <div class="camposNuevoPunto">
+                                        <div style="display: flex;">
+                                            <p>Lat:</p>
+                                            <input type="text" class="textfield" id="textfield1_${plan.planVueloId}" ${habilitado ? '' : 'disabled'} />
+                                        </div>
+                                        <div style="display: flex;">
+                                            <p>Long:</p>
+                                            <input type="text" class="textfield" id="textfield2_${plan.planVueloId}" ${habilitado ? '' : 'disabled'} />
+                                        </div>
+                                        <div style="display: flex;">
+                                            <p>Velocidad:</p>
+                                            <input type="text" class="textfield" id="textfield3_${plan.planVueloId}" ${habilitado ? '' : 'disabled'} />
+                                        </div>
+                                        <div style="display: flex;">
+                                            <p>Altitud:</p>
+                                            <input type="text" class="textfield" id="textfield4_${plan.planVueloId}" ${habilitado ? '' : 'disabled'} />
+                                        </div>
                                         <button class="boton-anadir" data-plan='${JSON.stringify(plan)}' id="button_${plan.planVueloId}" ${habilitado ? '' : 'disabled'}><strong style="color: white;">AÑADIR</strong></button>
                                     </div>
-                                    <button class="boton-casa" data-id="${plan.dronId}"><strong style="color: white;">VOLVER A BASE</strong></button>
                                 </div>
                             `;
 
                         const botonCambiar = detalles.querySelector('.boton-cambiar');
-                        /*
-                        botonCambiar.addEventListener('click', () => {
-                            const textManual = document.querySelector(`#textModo_${plan.planVueloId}`);
-                            const modoActual = textManual.textContent.includes('Automático') ? 'Automático' : 'Detenido';
-                            cambiarModo(plan.planVueloId, modoActual);
-                        });*/
                         botonCambiar.addEventListener('click', () => cambiarModo(plan));
                         botonModo.addEventListener('click', () => {
                             detalles.style.display = detalles.style.display === 'none' ? 'block' : 'none';
@@ -259,31 +267,39 @@
                             const plan = JSON.parse(planData);
                             const latString = document.querySelector(`#textfield1_${plan.planVueloId}`).value;
                             const longString = document.querySelector(`#textfield2_${plan.planVueloId}`).value;
+                            const velString = document.querySelector(`#textfield3_${plan.planVueloId}`).value;
+                            const altString = document.querySelector(`#textfield4_${plan.planVueloId}`).value;
                             // Comprobar que sea punto válido
-                            if (validarPunto(latString) && validarPunto(longString)) {
+                            if (validarPunto(latString) && validarPunto(longString) && validarAltVel(velString) && validarAltVel(altString)) {
                                 document.querySelector(`#textfield1_${plan.planVueloId}`).style.borderColor = '';
                                 document.querySelector(`#textfield2_${plan.planVueloId}`).style.borderColor = '';
+                                document.querySelector(`#textfield3_${plan.planVueloId}`).style.borderColor = '';
+                                document.querySelector(`#textfield4_${plan.planVueloId}`).style.borderColor = '';
                                 //Pasar a double
                                 const lat = parseFloat(latString);
                                 const long = parseFloat(longString);
-                                console.log(`Botón de 'AÑADIR PUNTO MANUAL' presionado para el dron con id ${plan.dronId}. \nPunto: Lat: ${lat} / Long: ${long}`);
+                                const vel = parseFloat(velString);
+                                const alt = parseFloat(altString);
+                                console.log(`Botón de 'AÑADIR PUNTO MANUAL' presionado para el dron con id ${plan.dronId}. \nPunto: Lat: ${lat} / Long: ${long} / Vel: ${vel} / Alt: ${alt}`);
                             }
                             else {
-                                if (validarPunto(latString) == validarPunto(longString)) {
+                                document.querySelector(`#textfield1_${plan.planVueloId}`).style.borderColor = '';
+                                document.querySelector(`#textfield2_${plan.planVueloId}`).style.borderColor = '';
+                                document.querySelector(`#textfield3_${plan.planVueloId}`).style.borderColor = '';
+                                document.querySelector(`#textfield4_${plan.planVueloId}`).style.borderColor = '';
+                                if (!validarPunto(latString)) {
                                     document.querySelector(`#textfield1_${plan.planVueloId}`).style.borderColor = 'red';
+                                }
+                                if (!validarPunto(longString)) {
                                     document.querySelector(`#textfield2_${plan.planVueloId}`).style.borderColor = 'red';
-                                    alert("Los valores de 'Latitud' y 'Longitud' no son válidos.");
                                 }
-                                else if (!validarPunto(latString)) {
-                                    document.querySelector(`#textfield1_${plan.planVueloId}`).style.borderColor = 'red';
-                                    document.querySelector(`#textfield2_${plan.planVueloId}`).style.borderColor = '';
-                                    alert("El valor de 'Latitud' no es válido.");
+                                if (!validarPunto(velString)) {
+                                    document.querySelector(`#textfield3_${plan.planVueloId}`).style.borderColor = 'red';
                                 }
-                                else {
-                                    document.querySelector(`#textfield2_${plan.planVueloId}`).style.borderColor = 'red';
-                                    document.querySelector(`#textfield1_${plan.planVueloId}`).style.borderColor = '';
-                                    alert("El valor de 'Longitud' no es válido.");
+                                if (!validarPunto(altString)) {
+                                    document.querySelector(`#textfield4_${plan.planVueloId}`).style.borderColor = 'red';
                                 }
+                                alert("Alguno de los valores introducidos no es válido.");
                             }
                         });
 
@@ -306,6 +322,10 @@
         // Validar puntos
         function validarPunto(input) {
             const regex = /^-?([0-9]|[1-9][0-9]|1[0-7][0-9]|180)(\.\d+)?$/;
+            return regex.test(input)
+        }
+        function validarAltVel(input) {
+            const regex = /^([0-9]+)(\.\d+)?$/;
             return regex.test(input)
         }
     </script>
@@ -427,13 +447,17 @@
         function actualizarTextFields(id) {
             const textfield1 = document.querySelector(`#textfield1_${id}`);
             const textfield2 = document.querySelector(`#textfield2_${id}`);
+            const textfield3 = document.querySelector(`#textfield3_${id}`);
+            const textfield4 = document.querySelector(`#textfield4_${id}`);
             const button = document.querySelector(`#button_${id}`);
             const textManual = document.querySelector(`#textModo_${id}`)
             
-            if (textfield1 && textfield2 && button && textManual) {
+            if (textfield1 && textfield2 && textfield3 && textfield4 && button && textManual) {
                 textManual.textContent = button.disabled ? 'Modo de vuelo: Manual    ' : 'Modo de vuelo: Automático'
                 textfield1.disabled = !textfield1.disabled;
                 textfield2.disabled = !textfield2.disabled;
+                textfield3.disabled = !textfield3.disabled;
+                textfield4.disabled = !textfield4.disabled;
                 button.disabled = !button.disabled;
             }
         }
