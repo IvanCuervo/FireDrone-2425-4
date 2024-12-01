@@ -2,6 +2,7 @@ namespace CentralBackend;
 using CentralBackend.Data;
 using CentralBackend.Hubs;
 using Microsoft.EntityFrameworkCore;
+using Models;
 using System.Text.Json.Serialization;
 
 public class Program
@@ -32,6 +33,7 @@ public class Program
         {
             var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
             dbContext.Database.EnsureCreated(); // Crea la base de datos si no existe
+            SeedData(dbContext); //Añade datos a la base de datos
         }
 
         // Opcional: para ver errores de base de datos en desarrollo
@@ -79,4 +81,108 @@ public class Program
 
         app.Run();
     }
+
+
+    static void SeedData(AppDbContext context)
+    {
+        // Tabla Area
+        if (!context.Areas.Any())
+        {
+            context.Areas.AddRange(
+                new Area { AreaId = 1, X = 39.46, Y = -6.37 },
+                new Area { AreaId = 2, X = 40.32, Y = -3.70 },
+                new Area { AreaId = 3, X = 38.90, Y = -4.25 },
+                new Area { AreaId = 4, X = 41.23, Y = -5.87 },
+                new Area { AreaId = 5, X = 39.20, Y = -3.35 }
+            );
+        }
+
+        // Tabla EstacionBase
+        if (!context.EstacionesBase.Any())
+        {
+            context.EstacionesBase.AddRange(
+                new EstacionBase { EstacionBaseId = 1, X = 39.47, Y = -6.38, AreaId = 1 },
+                new EstacionBase { EstacionBaseId = 2, X = 40.33, Y = -3.71, AreaId = 2 },
+                new EstacionBase { EstacionBaseId = 3, X = 38.91, Y = -4.26, AreaId = 3 },
+                new EstacionBase { EstacionBaseId = 4, X = 41.24, Y = -5.88, AreaId = 4 },
+                new EstacionBase { EstacionBaseId = 5, X = 39.21, Y = -3.36, AreaId = 5 }
+            );
+        }
+
+        // Tabla EstacionControl
+        if (!context.EstacionesControl.Any())
+        {
+            context.EstacionesControl.AddRange(
+                new EstacionControl { EstacionControlId = 1, X = 39.48, Y = -6.39, AreaId = 1 },
+                new EstacionControl { EstacionControlId = 2, X = 40.34, Y = -3.72, AreaId = 2 },
+                new EstacionControl { EstacionControlId = 3, X = 38.92, Y = -4.27, AreaId = 3 },
+                new EstacionControl { EstacionControlId = 4, X = 41.25, Y = -5.89, AreaId = 4 },
+                new EstacionControl { EstacionControlId = 5, X = 39.22, Y = -3.37, AreaId = 5 }
+            );
+        }
+
+        // Tabla Dron
+        if (!context.Drones.Any())
+        {
+            context.Drones.AddRange(
+                new Dron { DronId = 1, Modelo = "DJI Mavic Pro", Camara = "4K", Velocidad = 50.5, AutonomiaVuelo = 30.0, TiempoRecarga = 1.5, Simulador = "Simulador A", Estado = "Operativo", Sensores = "Infrarrojo", EstacionBaseId = 1, EstacionControlId = 1 },
+                new Dron { DronId = 2, Modelo = "Parrot Anafi", Camara = "HD", Velocidad = 45.0, AutonomiaVuelo = 25.0, TiempoRecarga = 1.0, Simulador = "Simulador B", Estado = "En mantenimiento", Sensores = "Ultrasonido", EstacionBaseId = 2, EstacionControlId = 2 },
+                new Dron { DronId = 3, Modelo = "Autel Evo", Camara = "4K", Velocidad = 55.5, AutonomiaVuelo = 35.0, TiempoRecarga = 2.0, Simulador = "Simulador C", Estado = "Operativo", Sensores = "Infrarrojo y ultrasonido", EstacionBaseId = 3, EstacionControlId = 3 },
+                new Dron { DronId = 4, Modelo = "DJI Phantom 4", Camara = "HD", Velocidad = 60.0, AutonomiaVuelo = 40.0, TiempoRecarga = 1.8, Simulador = "Simulador A", Estado = "Operativo", Sensores = "Termografía", EstacionBaseId = 4, EstacionControlId = 4 },
+                new Dron { DronId = 5, Modelo = "Yuneec Typhoon", Camara = "4K", Velocidad = 52.0, AutonomiaVuelo = 28.0, TiempoRecarga = 1.2, Simulador = "Simulador B", Estado = "Operativo", Sensores = "Infrarrojo y termografía", EstacionBaseId = 5, EstacionControlId = 5 }
+            );
+        }
+
+        // Tabla Ruta
+        if (!context.Rutas.Any())
+        {
+            context.Rutas.AddRange(
+                new Ruta { RutaId = 1, Estado = "Activa", Riesgo = "Alto", Periodica = "true", NumeroPeriodicidad = 15 },
+                new Ruta { RutaId = 2, Estado = "Inactiva", Riesgo = "Medio", Periodica = "false", NumeroPeriodicidad = 0 },
+                new Ruta { RutaId = 3, Estado = "Activa", Riesgo = "Bajo", Periodica = "true", NumeroPeriodicidad = 30 },
+                new Ruta { RutaId = 4, Estado = "En revisión", Riesgo = "Alto", Periodica = "true", NumeroPeriodicidad = 7 },
+                new Ruta { RutaId = 5, Estado = "Activa", Riesgo = "Medio", Periodica = "false", NumeroPeriodicidad = 0 }
+            );
+        }
+
+        // Tabla PlanVuelo
+        if (!context.PlanesVuelo.Any())
+        {
+            context.PlanesVuelo.AddRange(
+                new PlanVuelo { PlanVueloId = 1, FechaInicio = "2024-11-01", FechaFin = "2024-11-05", ControlManual = 0, DronId = 1, RutaId = 1 },
+                new PlanVuelo { PlanVueloId = 2, FechaInicio = "2024-11-06", FechaFin = "2024-11-10", ControlManual = 0, DronId = 2, RutaId = 2 },
+                new PlanVuelo { PlanVueloId = 3, FechaInicio = "2024-11-11", FechaFin = "2024-11-15", ControlManual = 0, DronId = 3, RutaId = 3 },
+                new PlanVuelo { PlanVueloId = 4, FechaInicio = "2024-11-16", FechaFin = "2024-11-20", ControlManual = 0, DronId = 4, RutaId = 4 },
+                new PlanVuelo { PlanVueloId = 5, FechaInicio = "2024-11-21", FechaFin = "2024-11-25", ControlManual = 0, DronId = 5, RutaId = 5 }
+            );
+        }
+
+        // Tabla PuntoPlanVuelo
+        if (!context.PuntosPlanVuelo.Any())
+        {
+            context.PuntosPlanVuelo.AddRange(
+                new PuntoPlanVuelo { PuntoPlanVueloId = 1, X = 43.53, Y = -5.6, Secuencial = 1, PlanVueloId = 1 },
+                new PuntoPlanVuelo { PuntoPlanVueloId = 2, X = 43.54, Y = -5.65, Secuencial = 2, PlanVueloId = 1 },
+                new PuntoPlanVuelo { PuntoPlanVueloId = 3, X = 43.52, Y = -5.67, Secuencial = 1, PlanVueloId = 2 },
+                new PuntoPlanVuelo { PuntoPlanVueloId = 4, X = 43.53, Y = -5.63, Secuencial = 2, PlanVueloId = 2 },
+                new PuntoPlanVuelo { PuntoPlanVueloId = 5, X = 43.53, Y = -5.67, Secuencial = 3, PlanVueloId = 3 }
+            );
+        }
+
+        // Tabla PuntoRuta
+        if (!context.PuntosRuta.Any())
+        {
+            context.PuntosRuta.AddRange(
+                new PuntoRuta { PuntoRutaId = 1, X = 43.53, Y = -5.6, Secuencial = 1, RutaId = 1 },
+                new PuntoRuta { PuntoRutaId = 2, X = 43.54, Y = -5.65, Secuencial = 2, RutaId = 1 },
+                new PuntoRuta { PuntoRutaId = 3, X = 43.52, Y = -5.67, Secuencial = 1, RutaId = 2 },
+                new PuntoRuta { PuntoRutaId = 4, X = 43.53, Y = -5.63, Secuencial = 2, RutaId = 2 },
+                new PuntoRuta { PuntoRutaId = 5, X = 43.53, Y = -5.67, Secuencial = 3, RutaId = 2 }
+            );
+        }
+
+        // Guarda los cambios en la base de datos
+        context.SaveChanges();
+    }
+
 }
