@@ -140,7 +140,7 @@ namespace CentralBackend.Controllers
                     Latitud = p.Latitud, // CAMBIAR
                     Altitud = p.Altitud, // CAMBIAR
                 }).ToList();
-                if (ruta.Periodica == "Si")
+                if (ruta.Periodica == "true")
                 {
                     // Obtener el último secuencial de la lista de puntos
                     int ultimoSecuencial = puntosPlanVuelo.Max(p => p.Secuencial);
