@@ -140,6 +140,17 @@ public class Program
             );
         }
 
+        if (!context.PuntosRuta.Any())
+        {
+            context.PuntosRuta.AddRange(
+                new PuntoRuta { PuntoRutaId = 1, X = 39.48, Y = -6.38, Secuencial = 1, Latitud = 100.0, Altitud = 450.0, RutaId = 1 },
+                new PuntoRuta { PuntoRutaId = 2, X = 39.49, Y = -6.39, Secuencial = 2, Latitud = 300.0, Altitud = 460.0, RutaId = 1 },
+                new PuntoRuta { PuntoRutaId = 3, X = 40.32, Y = -3.70, Secuencial = 1, Latitud = 200.0, Altitud = 470.0, RutaId = 2 },
+                new PuntoRuta { PuntoRutaId = 4, X = 40.33, Y = -3.71, Secuencial = 2, Latitud = 150.0, Altitud = 480.0, RutaId = 2 },
+                new PuntoRuta { PuntoRutaId = 5, X = 38.90, Y = -4.25, Secuencial = 1, Latitud = 80.0, Altitud = 490.0, RutaId = 3 }
+            );
+        }
+
         if (!context.PlanesVuelo.Any())
         {
             context.PlanesVuelo.AddRange(
@@ -162,14 +173,17 @@ public class Program
             );
         }
 
-        if (!context.PuntosRuta.Any())
+        if (!context.MedicionesPlanVuelo.Any())
         {
-            context.PuntosRuta.AddRange(
-                new PuntoRuta { PuntoRutaId = 1, X = 39.48, Y = -6.38, Secuencial = 1, Latitud = 100.0, Altitud = 450.0, RutaId = 1 },
-                new PuntoRuta { PuntoRutaId = 2, X = 39.49, Y = -6.39, Secuencial = 2, Latitud = 300.0, Altitud = 460.0, RutaId = 1 },
-                new PuntoRuta { PuntoRutaId = 3, X = 40.32, Y = -3.70, Secuencial = 1, Latitud = 200.0, Altitud = 470.0, RutaId = 2 },
-                new PuntoRuta { PuntoRutaId = 4, X = 40.33, Y = -3.71, Secuencial = 2, Latitud = 150.0, Altitud = 480.0, RutaId = 2 },
-                new PuntoRuta { PuntoRutaId = 5, X = 38.90, Y = -4.25, Secuencial = 1, Latitud = 80.0, Altitud = 490.0, RutaId = 3 }
+            context.MedicionesPlanVuelo.AddRange(
+                new MedicionPlanVuelo { MedicionPlanVueloId = 1, Altura = 100.0, Fecha = "2024-11-01", Humedad = 55, ImagenNormal = "img_normal1.jpg", ImagenTermica = "img_termica1.jpg", ModoDeVuelo = "Auto", PlanVueloId = 1, SensoresActivados = "Sensor1", Temperatura = 25.5, Velocidad = 50.0, X = 39.48, Y = -6.38 }
+            );
+        }
+
+        if (!context.Incidencias.Any())
+        {
+            context.Incidencias.AddRange(
+                new Incidencia { IncidenciaId = 1, Informacion = "Fuego detectado", Fecha = "2024-11-01", X = 39.48, Y = -6.38, MedicionPlanVueloId = 1 }
             );
         }
 
