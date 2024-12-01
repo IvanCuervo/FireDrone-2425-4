@@ -137,6 +137,8 @@ namespace CentralBackend.Controllers
                     Y = p.Y,
                     Secuencial = p.Secuencial,
                     PlanVueloId = planVuelo.PlanVueloId,
+                    Latitud = p.Latitud, // CAMBIAR
+                    Altitud = p.Altitud, // CAMBIAR
                 }).ToList();
                 if (ruta.Periodica == "Si")
                 {
@@ -154,7 +156,9 @@ namespace CentralBackend.Controllers
                                 X = punto.X,
                                 Y = punto.Y,
                                 Secuencial = ronda * ultimoSecuencial + punto.Secuencial,
-                                PlanVueloId = punto.PlanVueloId
+                                PlanVueloId = punto.PlanVueloId,
+                                Latitud = punto.Latitud, // CAMBIAR
+                                Altitud = punto.Altitud, // CAMBIAR
                             };
 
                             // Agregar el nuevo punto a la lista de duplicados
@@ -174,6 +178,8 @@ namespace CentralBackend.Controllers
                         Y = estBase.Y,
                         Secuencial = puntosPlanVuelo.Count + 1,
                         PlanVueloId = planVuelo.PlanVueloId,
+                        Latitud = 50, // CAMBIAR
+                        Altitud = 50, // CAMBIAR
                     });
                     foreach (var punto in puntosPlanVuelo)
                     {
