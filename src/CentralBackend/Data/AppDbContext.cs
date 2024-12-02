@@ -4,7 +4,11 @@ using Models;
 namespace CentralBackend.Data {
     public class AppDbContext : DbContext
     {
-        
+        public AppDbContext(DbContextOptions<AppDbContext> options)
+            : base(options)
+        {
+        }
+		
         public DbSet<Area> Areas { get; set; }
         public DbSet<Dron> Drones { get; set; }
         public DbSet<EstacionBase> EstacionesBase { get; set; }
@@ -15,10 +19,5 @@ namespace CentralBackend.Data {
         public DbSet<PuntoRuta> PuntosRuta { get; set; }
         public DbSet<Ruta> Rutas { get; set; }
         public DbSet<PuntoPlanVuelo> PuntosPlanVuelo { get; set; }
-
-        public AppDbContext(DbContextOptions<AppDbContext> options)
-            : base(options)
-        {
-        }
     }
 }

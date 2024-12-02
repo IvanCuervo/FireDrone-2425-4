@@ -137,8 +137,8 @@ namespace CentralBackend.Controllers
                     Y = p.Y,
                     Secuencial = p.Secuencial,
                     PlanVueloId = planVuelo.PlanVueloId,
-                    Latitud = p.Latitud, // CAMBIAR
-                    Altitud = p.Altitud, // CAMBIAR
+                    Velocidad = p.Velocidad,
+                    Altitud = p.Altitud,
                 }).ToList();
                 if (ruta.Periodica == "true")
                 {
@@ -157,8 +157,8 @@ namespace CentralBackend.Controllers
                                 Y = punto.Y,
                                 Secuencial = ronda * ultimoSecuencial + punto.Secuencial,
                                 PlanVueloId = punto.PlanVueloId,
-                                Latitud = punto.Latitud, // CAMBIAR
-                                Altitud = punto.Altitud, // CAMBIAR
+                                Velocidad = punto.Velocidad,
+                                Altitud = punto.Altitud,
                             };
 
                             // Agregar el nuevo punto a la lista de duplicados
@@ -178,8 +178,8 @@ namespace CentralBackend.Controllers
                         Y = estBase.Y,
                         Secuencial = puntosPlanVuelo.Count + 1,
                         PlanVueloId = planVuelo.PlanVueloId,
-                        Latitud = 50, // CAMBIAR
-                        Altitud = 50, // CAMBIAR
+                        Velocidad = 50,
+                        Altitud = 50,
                     });
                     foreach (var punto in puntosPlanVuelo)
                     {
@@ -192,7 +192,7 @@ namespace CentralBackend.Controllers
                         var puntosPlan = await _context.PuntosPlanVuelo
                             .Where(p => p.PlanVueloId == planVuelo.PlanVueloId) // Filtrar por el campo planVueloId
                             .OrderBy(p => p.Secuencial)                  // Ordenar por el campo Secuencia
-                            .Select(p => new Waypoint { Longitude = p.X, Latitude = p.Y, Speed = p.Latitud, Altitude = p.Altitud }) // CAMBIAR
+                            .Select(p => new Waypoint { Longitude = p.X, Latitude = p.Y, Speed = p.Velocidad, Altitude = p.Altitud }) // CAMBIAR
                             .ToListAsync();
                         var puntosJson = JsonConvert.SerializeObject(puntosPlan);
                         // Llamada servicio

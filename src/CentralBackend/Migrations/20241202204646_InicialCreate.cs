@@ -1,12 +1,11 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace CentralBackend.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class InicialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -116,6 +115,8 @@ namespace CentralBackend.Migrations
                     X = table.Column<double>(type: "REAL", nullable: false),
                     Y = table.Column<double>(type: "REAL", nullable: false),
                     Secuencial = table.Column<int>(type: "INTEGER", nullable: false),
+                    Velocidad = table.Column<double>(type: "REAL", nullable: false),
+                    Altitud = table.Column<double>(type: "REAL", nullable: false),
                     RutaId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
@@ -143,6 +144,7 @@ namespace CentralBackend.Migrations
                     Simulador = table.Column<string>(type: "TEXT", nullable: true),
                     Estado = table.Column<string>(type: "TEXT", nullable: true),
                     Sensores = table.Column<string>(type: "TEXT", nullable: true),
+                    Bateria = table.Column<double>(type: "REAL", nullable: false),
                     EstacionBaseId = table.Column<int>(type: "INTEGER", nullable: false),
                     EstacionControlId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
@@ -169,8 +171,8 @@ namespace CentralBackend.Migrations
                 {
                     PlanVueloId = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    FechaInicio = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    FechaFin = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    FechaInicio = table.Column<string>(type: "TEXT", nullable: true),
+                    FechaFin = table.Column<string>(type: "TEXT", nullable: true),
                     ControlManual = table.Column<int>(type: "INTEGER", nullable: false),
                     DronId = table.Column<int>(type: "INTEGER", nullable: false),
                     RutaId = table.Column<int>(type: "INTEGER", nullable: false)
@@ -198,8 +200,7 @@ namespace CentralBackend.Migrations
                 {
                     MedicionPlanVueloId = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Fecha = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    Hora = table.Column<string>(type: "TEXT", nullable: true),
+                    Fecha = table.Column<string>(type: "TEXT", nullable: true),
                     ImagenTermica = table.Column<string>(type: "TEXT", nullable: true),
                     ImagenNormal = table.Column<string>(type: "TEXT", nullable: true),
                     Humedad = table.Column<int>(type: "INTEGER", nullable: false),
@@ -224,7 +225,7 @@ namespace CentralBackend.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "PuntoPlanVuelo",
+                name: "PuntosPlanVuelo",
                 columns: table => new
                 {
                     PuntoPlanVueloId = table.Column<int>(type: "INTEGER", nullable: false)
@@ -232,13 +233,15 @@ namespace CentralBackend.Migrations
                     X = table.Column<double>(type: "REAL", nullable: false),
                     Y = table.Column<double>(type: "REAL", nullable: false),
                     Secuencial = table.Column<int>(type: "INTEGER", nullable: false),
+                    Velocidad = table.Column<double>(type: "REAL", nullable: false),
+                    Altitud = table.Column<double>(type: "REAL", nullable: false),
                     PlanVueloId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PuntoPlanVuelo", x => x.PuntoPlanVueloId);
+                    table.PrimaryKey("PK_PuntosPlanVuelo", x => x.PuntoPlanVueloId);
                     table.ForeignKey(
-                        name: "FK_PuntoPlanVuelo_PlanesVuelo_PlanVueloId",
+                        name: "FK_PuntosPlanVuelo_PlanesVuelo_PlanVueloId",
                         column: x => x.PlanVueloId,
                         principalTable: "PlanesVuelo",
                         principalColumn: "PlanVueloId",
@@ -252,8 +255,7 @@ namespace CentralBackend.Migrations
                     IncidenciaId = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Informacion = table.Column<string>(type: "TEXT", nullable: true),
-                    Fecha = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    Hora = table.Column<string>(type: "TEXT", nullable: true),
+                    Fecha = table.Column<string>(type: "TEXT", nullable: true),
                     X = table.Column<double>(type: "REAL", nullable: false),
                     Y = table.Column<double>(type: "REAL", nullable: false),
                     MedicionPlanVueloId = table.Column<int>(type: "INTEGER", nullable: false)
@@ -315,8 +317,8 @@ namespace CentralBackend.Migrations
                 column: "RutaId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PuntoPlanVuelo_PlanVueloId",
-                table: "PuntoPlanVuelo",
+                name: "IX_PuntosPlanVuelo_PlanVueloId",
+                table: "PuntosPlanVuelo",
                 column: "PlanVueloId");
 
             migrationBuilder.CreateIndex(
@@ -335,7 +337,7 @@ namespace CentralBackend.Migrations
                 name: "Incidencias");
 
             migrationBuilder.DropTable(
-                name: "PuntoPlanVuelo");
+                name: "PuntosPlanVuelo");
 
             migrationBuilder.DropTable(
                 name: "PuntosRuta");

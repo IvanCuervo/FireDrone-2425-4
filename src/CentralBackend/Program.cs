@@ -32,7 +32,8 @@ public class Program
         using (var scope = builder.Services.BuildServiceProvider().CreateScope())
         {
             var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            dbContext.Database.EnsureCreated(); // Crea la base de datos si no existe
+            EliminarTablas(dbContext);
+            dbContext.Database.Migrate();
             SeedData(dbContext); //Añade datos a la base de datos
         }
 
@@ -143,11 +144,11 @@ public class Program
         if (!context.PuntosRuta.Any())
         {
             context.PuntosRuta.AddRange(
-                new PuntoRuta { PuntoRutaId = 1, X = 39.48, Y = -6.38, Secuencial = 1, Latitud = 100.0, Altitud = 450.0, RutaId = 1 },
-                new PuntoRuta { PuntoRutaId = 2, X = 39.49, Y = -6.39, Secuencial = 2, Latitud = 300.0, Altitud = 460.0, RutaId = 1 },
-                new PuntoRuta { PuntoRutaId = 3, X = 40.32, Y = -3.70, Secuencial = 1, Latitud = 200.0, Altitud = 470.0, RutaId = 2 },
-                new PuntoRuta { PuntoRutaId = 4, X = 40.33, Y = -3.71, Secuencial = 2, Latitud = 150.0, Altitud = 480.0, RutaId = 2 },
-                new PuntoRuta { PuntoRutaId = 5, X = 38.90, Y = -4.25, Secuencial = 1, Latitud = 80.0, Altitud = 490.0, RutaId = 3 }
+                new PuntoRuta { PuntoRutaId = 1, X = -5.6690005, Y = 43.5363635, Secuencial = 1, Velocidad = 100.0, Altitud = 450.0, RutaId = 1 },
+                new PuntoRuta { PuntoRutaId = 2, X = -5.654495, Y = 43.5411457, Secuencial = 2, Velocidad = 300.0, Altitud = 460.0, RutaId = 1 },
+                new PuntoRuta { PuntoRutaId = 3, X = -5.654495, Y = 43.5411457, Secuencial = 1, Velocidad = 200.0, Altitud = 470.0, RutaId = 2 },
+                new PuntoRuta { PuntoRutaId = 4, X = -5.6754494, Y = 43.5344871, Secuencial = 2, Velocidad = 150.0, Altitud = 480.0, RutaId = 2 },
+                new PuntoRuta { PuntoRutaId = 5, X = -5.654495, Y = 43.5411457, Secuencial = 1, Velocidad = 80.0, Altitud = 490.0, RutaId = 3 }
             );
         }
 
@@ -165,13 +166,14 @@ public class Program
         if (!context.PuntosPlanVuelo.Any())
         {
             context.PuntosPlanVuelo.AddRange(
-                new PuntoPlanVuelo { PuntoPlanVueloId = 1, X = 39.47, Y = -6.38, Secuencial = 1, Latitud = 39.4701, Altitud = 500.0, PlanVueloId = 1 },
-                new PuntoPlanVuelo { PuntoPlanVueloId = 2, X = 39.47, Y = -6.39, Secuencial = 2, Latitud = 39.4702, Altitud = 510.0, PlanVueloId = 1 },
-                new PuntoPlanVuelo { PuntoPlanVueloId = 3, X = 39.48, Y = -6.38, Secuencial = 1, Latitud = 39.4801, Altitud = 520.0, PlanVueloId = 2 },
-                new PuntoPlanVuelo { PuntoPlanVueloId = 4, X = 39.48, Y = -6.39, Secuencial = 2, Latitud = 39.4802, Altitud = 530.0, PlanVueloId = 2 },
-                new PuntoPlanVuelo { PuntoPlanVueloId = 5, X = 39.49, Y = -6.38, Secuencial = 3, Latitud = 39.4901, Altitud = 540.0, PlanVueloId = 3 }
+                new PuntoPlanVuelo { PuntoPlanVueloId = 1, X = -5.6690005, Y = 43.5363635, Secuencial = 1, Velocidad = 43.5363635, Altitud = 500.0, PlanVueloId = 1 },
+                new PuntoPlanVuelo { PuntoPlanVueloId = 2, X = -5.654495, Y = 43.5411457, Secuencial = 2, Velocidad = 39.4702, Altitud = 510.0, PlanVueloId = 1 },
+                new PuntoPlanVuelo { PuntoPlanVueloId = 3, X = -5.654495, Y = 43.5411457, Secuencial = 1, Velocidad = 39.4801, Altitud = 520.0, PlanVueloId = 2 },
+                new PuntoPlanVuelo { PuntoPlanVueloId = 4, X = -5.6754494, Y = 43.5344871, Secuencial = 2, Velocidad = 39.4802, Altitud = 530.0, PlanVueloId = 2 },
+                new PuntoPlanVuelo { PuntoPlanVueloId = 5, X = 39.49, Y = -6.38, Secuencial = 3, Velocidad = 39.4901, Altitud = 540.0, PlanVueloId = 3 }
             );
         }
+
 
         if (!context.MedicionesPlanVuelo.Any())
         {
@@ -189,5 +191,40 @@ public class Program
 
         context.SaveChanges();
     }
+
+    public static void EliminarTablas(AppDbContext context)
+    {
+        // Deshabilitar las restricciones de claves foráneas temporalmente
+        context.Database.ExecuteSqlRaw("PRAGMA foreign_keys = OFF;");
+
+        try
+        {
+            // Eliminar las entidades en el orden adecuado (dependiendo de las claves foráneas)
+            context.PuntosPlanVuelo.RemoveRange(context.PuntosPlanVuelo);
+            context.MedicionesPlanVuelo.RemoveRange(context.MedicionesPlanVuelo);
+            context.Incidencias.RemoveRange(context.Incidencias);
+            context.PuntosRuta.RemoveRange(context.PuntosRuta);
+            context.Rutas.RemoveRange(context.Rutas);
+            context.PlanesVuelo.RemoveRange(context.PlanesVuelo);
+            context.Drones.RemoveRange(context.Drones);
+            context.EstacionesControl.RemoveRange(context.EstacionesControl);
+            context.EstacionesBase.RemoveRange(context.EstacionesBase);
+            context.Areas.RemoveRange(context.Areas);
+
+            // Guardar los cambios (eliminación de datos)
+            context.SaveChanges();
+        }
+        catch (Exception ex)
+        {
+            // Manejo de excepciones (opcional)
+            Console.WriteLine($"Error al eliminar tablas: {ex.Message}");
+        }
+        finally
+        {
+            // Volver a habilitar las restricciones de claves foráneas
+            context.Database.ExecuteSqlRaw("PRAGMA foreign_keys = ON;");
+        }
+    }
+
 
 }

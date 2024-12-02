@@ -256,14 +256,14 @@ namespace CentralBackend.Migrations
                     b.Property<double>("Altitud")
                         .HasColumnType("REAL");
 
-                    b.Property<double>("Latitud")
-                        .HasColumnType("REAL");
-
                     b.Property<int>("PlanVueloId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("Secuencial")
                         .HasColumnType("INTEGER");
+
+                    b.Property<double>("Velocidad")
+                        .HasColumnType("REAL");
 
                     b.Property<double>("X")
                         .HasColumnType("REAL");
@@ -287,14 +287,14 @@ namespace CentralBackend.Migrations
                     b.Property<double>("Altitud")
                         .HasColumnType("REAL");
 
-                    b.Property<double>("Latitud")
-                        .HasColumnType("REAL");
-
                     b.Property<int>("RutaId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("Secuencial")
                         .HasColumnType("INTEGER");
+
+                    b.Property<double>("Velocidad")
+                        .HasColumnType("REAL");
 
                     b.Property<double>("X")
                         .HasColumnType("REAL");

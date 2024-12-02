@@ -118,8 +118,7 @@
         public double X { get; set; }
         public double Y { get; set; }
         public int Secuencial { get; set; }
-
-        public double Latitud { get; set; }
+        public double Velocidad { get; set; }
         public double Altitud { get; set; }
 
         public int PlanVueloId { get; set; }
@@ -132,9 +131,8 @@
         public double X { get; set; }
         public double Y { get; set; }
         public int Secuencial { get; set; }
-
-        public double Latitud { get; set; }  // Nueva columna
-        public double Altitud { get; set; }  // Nueva columna
+        public double Velocidad { get; set; }
+        public double Altitud { get; set; }
 
         public int RutaId { get; set; }
         public Ruta? Ruta { get; set; }
