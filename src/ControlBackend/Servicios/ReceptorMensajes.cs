@@ -72,11 +72,38 @@ namespace ControlBackend.Servicios
                 // Incidencias
                 Random random = new Random();
                 int numRandom = random.Next(1, 11);
-
-                if(numRandom < 5)
+                string endpointIncidencia = "api/Incidencias";
+                string fullUrlIncidencia = $"{client.BaseAddress}{endpointIncidencia}";
+                Console.WriteLine($"Enviando POST a la URL: {fullUrlIncidencia}");
+                Incidencia nuevaInc;
+                if (numRandom < 5)
                 {
                     // api incidencias
                     Console.WriteLine($"Enviar incidencia: {numRandom}");
+                    if (numRandom < 3)
+                    {
+                        nuevaInc = new Incidencia
+                        {
+                            X = medicion.X,
+                            Y = medicion.Y,
+                            Informacion = "Alta temperatura",
+                            Fecha = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+                            MedicionPlanVueloId = idMedicion
+                        };
+
+                    }
+                    else
+                    {
+                        nuevaInc = new Incidencia
+                        {
+                            X = medicion.X,
+                            Y = medicion.Y,
+                            Informacion = "Fuego detectado",
+                            Fecha = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+                            MedicionPlanVueloId = idMedicion
+                        };
+                    }
+                    HttpResponseMessage responseIncidencia = client.PostAsJsonAsync("api/Incidencias", nuevaInc).Result;
                 }
 
             }
