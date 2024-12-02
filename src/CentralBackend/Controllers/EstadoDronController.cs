@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 using System.Net.Http.Headers;
+using Microsoft.EntityFrameworkCore;
 
 namespace CentralBackend.Controllers
 {
@@ -36,7 +37,7 @@ namespace CentralBackend.Controllers
         }
 
         [HttpPost("recibirestado")]
-        public async Task<IActionResult> RecibirEstadoDron([FromBody] MedicionPlanVuelo medicion)
+        public async Task<ActionResult<int>> RecibirEstadoDron([FromBody] MedicionPlanVuelo medicion)
         {
             // Validar que la medición no sea nula
             if (medicion == null)
@@ -61,10 +62,27 @@ namespace CentralBackend.Controllers
             // Llamar a ActualizarPosicionDron para enviar la información actualizada
             await _service.ActualizarPosicionDron(dronInfo);
 
-            //_context.MedicionesPlanVuelo.Add(medicion);
-            //_context.SaveChanges();
+            // Añadir medicion a bd
+            var planVuelo = await _context.PlanesVuelo
+            .Where(p => p.DronId == medicion.PlanVuelo.DronId)                // Filtrar por DronId
+            .OrderByDescending(p => p.FechaInicio)         // Ordenar por FechaInicio en orden descendente
+            .FirstOrDefaultAsync();                        // Obtener el primer registro
+            if (planVuelo != null)
+            {
+                medicion.PlanVueloId = planVuelo.PlanVueloId;
+                medicion.PlanVuelo = null;
 
-            return Ok("Medición procesada correctamente.");
+                _context.MedicionesPlanVuelo.Add(medicion);
+
+                var savedChanges = await _context.SaveChangesAsync();
+                var nuevaMedicionId = medicion.MedicionPlanVueloId;
+
+                return Ok(nuevaMedicionId);
+            }
+            else
+            {
+                return BadRequest("No se encontró un plan de vuelo asociado.");
+            }
         }
 
     }

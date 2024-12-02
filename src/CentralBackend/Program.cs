@@ -154,7 +154,7 @@ public class Program
         if (!context.PlanesVuelo.Any())
         {
             context.PlanesVuelo.AddRange(
-                new PlanVuelo { PlanVueloId = 1, FechaInicio = "2024-11-01", FechaFin = "2024-11-05", ControlManual = 0, DronId = 1, RutaId = 1 },
+                new PlanVuelo { PlanVueloId = 1, FechaInicio = "2024-12-02 15:04:09.178", FechaFin = "2024-12-02 16:04:09.178", ControlManual = 0, DronId = 1, RutaId = 1 },
                 new PlanVuelo { PlanVueloId = 2, FechaInicio = "2024-11-06", FechaFin = "2024-11-10", ControlManual = 0, DronId = 2, RutaId = 2 },
                 new PlanVuelo { PlanVueloId = 3, FechaInicio = "2024-11-11", FechaFin = "2024-11-15", ControlManual = 0, DronId = 3, RutaId = 3 },
                 new PlanVuelo { PlanVueloId = 4, FechaInicio = "2024-11-16", FechaFin = "2024-11-20", ControlManual = 0, DronId = 4, RutaId = 4 },

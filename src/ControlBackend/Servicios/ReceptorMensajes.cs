@@ -27,12 +27,12 @@ namespace ControlBackend.Servicios
 
             int dronID = Int32.Parse(dronIDString);
 
-
             var planVuelo = new PlanVuelo
             {
                 DronId = dronID, // Asignar el DronId desde el DTO
             };
 
+            Console.WriteLine(message);
 
             MedicionPlanVuelo medicion = new MedicionPlanVuelo
             {
@@ -41,11 +41,15 @@ namespace ControlBackend.Servicios
                 Altura = medicionDTO.Altitude,
                 Velocidad = medicionDTO.Speed,
                 Fecha = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
-                PlanVuelo = planVuelo
+                //PlanVueloId = 1, // CAMBIAR
+                PlanVuelo = planVuelo,
+                ModoDeVuelo = "",
+                SensoresActivados = "",
+                Temperatura = 0.0,
+                Humedad = 0,
+                ImagenNormal = "",
+                ImagenTermica = ""
             };
-
-
-            Console.WriteLine($"[x] Received MedicionPlanVueloId: {medicion.MedicionPlanVueloId} from topic: {topic}");
 
 
             HttpClient client = new HttpClient();
@@ -59,7 +63,23 @@ namespace ControlBackend.Servicios
             Console.WriteLine($"Enviando POST a la URL: {fullUrl}");
 
             HttpResponseMessage response = client.PostAsJsonAsync("api/EstadoDron/recibirestado", medicion).Result;
+            if (response.IsSuccessStatusCode)
+            {
+                int idMedicion = response.Content.ReadFromJsonAsync<int>().Result;
 
+                Console.WriteLine($"[x] Received MedicionPlanVueloId: {idMedicion} from topic: {topic}");
+
+                // Incidencias
+                Random random = new Random();
+                int numRandom = random.Next(1, 11);
+
+                if(numRandom < 5)
+                {
+                    // api incidencias
+                    Console.WriteLine($"Enviar incidencia: {numRandom}");
+                }
+
+            }
             // Imprimir la respuesta
             Console.WriteLine($"Respuesta del servidor: {response.StatusCode}");
             Console.WriteLine($"Contenido de la respuesta: {response.Content.ReadAsStringAsync().Result}");
