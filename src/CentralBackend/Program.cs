@@ -43,7 +43,7 @@ public class Program
         {
             options.AddPolicy("AllowSpecificOrigin", policy =>
             {
-                policy.WithOrigins("http://localhost:5035")
+                policy.WithOrigins("http://localhost:5401")
                       .AllowAnyMethod()
                       .AllowAnyHeader()
                       .AllowCredentials(); // Permitir credenciales si se necesitan

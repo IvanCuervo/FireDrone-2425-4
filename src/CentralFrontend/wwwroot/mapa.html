@@ -205,7 +205,7 @@
 
         // Se crea la conexión con SignalR en la URL configurada
         var connection = new signalR.HubConnectionBuilder()
-            .withUrl("http://localhost:5285/updatemaphub") // CAMBIAR!! AHORA MISMO RUTA CON REFERENCIA A PUERTO
+            .withUrl("http://localhost:5400/updatemaphub") // CAMBIAR!! AHORA MISMO RUTA CON REFERENCIA A PUERTO
             .withAutomaticReconnect()
             .configureLogging(signalR.LogLevel.Debug)
             .build();

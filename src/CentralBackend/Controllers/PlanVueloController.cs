@@ -29,7 +29,7 @@ namespace CentralBackend.Controllers
             _context = context;
 
             HttpClient _client = new HttpClient();
-            _client.BaseAddress = new Uri("http://localhost:5057/");
+            _client.BaseAddress = new Uri("http://localhost:5402/");
             _client.DefaultRequestHeaders.Accept.Clear();
             _client.DefaultRequestHeaders.Accept.Add(
             new MediaTypeWithQualityHeaderValue("application/json"));
@@ -283,7 +283,7 @@ namespace CentralBackend.Controllers
                 // Llamada api update planes de vuelo
                 using (var httpClient = new HttpClient())
                 {
-                    var notificationApiUrl = $"http://localhost:5285/api/UpdatePlanesVuelo?id={id}"; // CAMBIAR!! AHORA MISMO RUTA CON REFERENCIA A PUERTO
+                    var notificationApiUrl = $"http://localhost:5400/api/UpdatePlanesVuelo?id={id}";
                     var response = await httpClient.PostAsync(notificationApiUrl, null);
                     
                     if (!response.IsSuccessStatusCode)

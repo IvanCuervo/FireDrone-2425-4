@@ -21,7 +21,7 @@ namespace CentralBackend.Controllers
             _context = context;
 
             HttpClient _client = new HttpClient();
-            _client.BaseAddress = new Uri("http://localhost:5057/");
+            _client.BaseAddress = new Uri("http://localhost:5402/");
             _client.DefaultRequestHeaders.Accept.Clear();
             _client.DefaultRequestHeaders.Accept.Add(
             new MediaTypeWithQualityHeaderValue("application/json"));

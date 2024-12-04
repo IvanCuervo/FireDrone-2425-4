@@ -161,7 +161,7 @@
     </script>
 
     <script>
-        const apiUrlRutas = 'http://localhost:5285/api/Ruta';
+        const apiUrlRutas = 'http://localhost:5400/api/Ruta';
 
         async function obtenerRutas() {
             try {
@@ -190,7 +190,7 @@
     </script>
 
     <script>
-        const apiUrlDrones = 'http://localhost:5285/api/Dron';
+        const apiUrlDrones = 'http://localhost:5400/api/Dron';
 
         async function obtenerDrones() {
             try {
@@ -232,7 +232,7 @@
             return `${año}-${mes}-${dia} ${horas}:${minutos}:${segundos}.${milisegundos}`;
         }
         
-        const apiUrlPlanVuelo = 'http://localhost:5285/api/PlanVuelo';
+        const apiUrlPlanVuelo = 'http://localhost:5400/api/PlanVuelo';
 
         async function crearPlanVuelo() {
             const selectRuta = document.getElementById('rutas-select').value;
@@ -247,7 +247,7 @@
                 ControlManual: 0 //Falso
             };
 
-            const apiUrlBaseEstadoDron = `http://localhost:5285/api/EstadoDron`;
+            const apiUrlBaseEstadoDron = `http://localhost:5400/api/EstadoDron`;
             const dronId = document.getElementById('drones-select').value;
             const apiUrlEstadoDron = `${apiUrlBaseEstadoDron}/estado/${dronId}`;
 

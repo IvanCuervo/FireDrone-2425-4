@@ -148,7 +148,7 @@
     </script>
 
     <script>
-        const apiUrlPlanesVuelo = 'http://localhost:5285/api/PlanVuelo';
+        const apiUrlPlanesVuelo = 'http://localhost:5400/api/PlanVuelo';
 
         async function obtenerPlanesVuelo() {
             try {
@@ -332,7 +332,7 @@
 
     <script>
         async function obtenerDron(dronId) {
-            const apiUrlBaseDron = 'http://localhost:5285/api/Dron';
+            const apiUrlBaseDron = 'http://localhost:5400/api/Dron';
             const apiUrlDron = `${apiUrlBaseDron}/${dronId}`;
             try {
                 const response = await fetch(apiUrlDron);
@@ -352,7 +352,7 @@
 
     <script>
         async function obtenerEstBase(estBaseId) {
-            const apiUrlBaseEstBase = 'http://localhost:5285/api/EstacionBase';
+            const apiUrlBaseEstBase = 'http://localhost:5400/api/EstacionBase';
             const apiUrlEstBase = `${apiUrlBaseEstBase}/${estBaseId}`;
             try {
                 const response = await fetch(apiUrlEstBase);
@@ -372,7 +372,7 @@
 
     <script>
         async function cambiarModo(planVuelo) {
-            const apiUrlBasePlanVuelo = `http://localhost:5285/api/PlanVuelo`;
+            const apiUrlBasePlanVuelo = `http://localhost:5400/api/PlanVuelo`;
             const apiUrlControlManual = `${apiUrlBasePlanVuelo}/${planVuelo.planVueloId}/controlManual`;
             const apiUrlPararPlan = `${apiUrlBasePlanVuelo}/parar/${planVuelo.planVueloId}`;
             
@@ -419,7 +419,7 @@
 
         // Se crea la conexión con SignalR en la URL configurada
         var connection = new signalR.HubConnectionBuilder()
-            .withUrl("http://localhost:5285/updateplanesvuelohub") // CAMBIAR!! AHORA MISMO RUTA CON REFERENCIA A PUERTO
+            .withUrl("http://localhost:5400/updateplanesvuelohub")
             .withAutomaticReconnect()
             .configureLogging(signalR.LogLevel.Debug)
             .build();
